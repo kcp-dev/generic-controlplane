@@ -80,14 +80,14 @@ func (s *AdminAuthentication) AddFlags(fs *pflag.FlagSet) {
 		"Path to which the administrative token hash should be written at startup. If this is relative, it is relative to --root-directory.")
 }
 
-// ApplyTo returns a new volatile kcp admin token.
+// ApplyTo returns a new volatile gcp admin token.
 // It also returns a new shard admin token and its hash if the configured shard admin hash file is not present.
 // If the shard admin hash file is present only the shard admin hash is returned and the returned shard admin token is empty.
 func (s *AdminAuthentication) ApplyTo(config *genericapiserver.Config) (volatileGcpAdminToken, volatileUserToken string, err error) {
 	volatileUserToken = uuid.New().String()
 	volatileGcpAdminToken = uuid.New().String()
 
-	kcpAdminUser := &user.DefaultInfo{
+	gcpAdminUser := &user.DefaultInfo{
 		Name: gcpAdminUserName,
 		UID:  uuid.New().String(),
 		Groups: []string{
@@ -103,7 +103,7 @@ func (s *AdminAuthentication) ApplyTo(config *genericapiserver.Config) (volatile
 
 	newAuthenticator := group.NewAuthenticatedGroupAdder(bearertoken.New(authenticator.WrapAudienceAgnosticToken(config.Authentication.APIAudiences, authenticator.TokenFunc(func(ctx context.Context, requestToken string) (*authenticator.Response, bool, error) {
 		if requestToken == volatileGcpAdminToken {
-			return &authenticator.Response{User: kcpAdminUser}, true, nil
+			return &authenticator.Response{User: gcpAdminUser}, true, nil
 		}
 
 		if requestToken == volatileUserToken {
@@ -118,11 +118,11 @@ func (s *AdminAuthentication) ApplyTo(config *genericapiserver.Config) (volatile
 	return volatileGcpAdminToken, volatileUserToken, nil
 }
 
-func (s *AdminAuthentication) WriteKubeConfig(config genericapiserver.CompletedConfig, kcpAdminToken, userToken string) error {
+func (s *AdminAuthentication) WriteKubeConfig(config genericapiserver.CompletedConfig, gcpAdminToken, userToken string) error {
 	externalCACert, _ := config.SecureServing.Cert.CurrentCertKeyContent()
 	externalKubeConfigHost := fmt.Sprintf("https://%s", config.ExternalAddress)
 
-	externalKubeConfig := createKubeConfig(kcpAdminToken, userToken, externalKubeConfigHost, "", externalCACert)
+	externalKubeConfig := createKubeConfig(gcpAdminToken, userToken, externalKubeConfigHost, "", externalCACert)
 	return clientcmd.WriteToFile(*externalKubeConfig, s.KubeConfigPath)
 }
 
