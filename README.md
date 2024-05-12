@@ -2,11 +2,11 @@
 
 # IMPORTANT:
 
-Generic Control Plane (gcp) is a new project under KCP umbrella and is not yet ready for production use. We are actively working on the project and welcome contributions from the community. If you are interested in contributing, please see our [contributing guide](CONTRIBUTING.md).
+Generic Control Plane is a new project under KCP umbrella and is not yet ready for production use. We are actively working on the project and welcome contributions from the community. If you are interested in contributing, please see our [contributing guide](CONTRIBUTING.md).
 
 ## Overview
 
-Generic Control plane (gcp) is a Kubernetes control plane focusing on:
+Generic Control plane is a Kubernetes based control plane focusing on:
 
 - A **control plane** for Kubernetes-native APIs that can be used **without Kubernetes**
 - Enabling API service providers to **offer APIs centrally**
@@ -16,7 +16,7 @@ The goal is to be useful to cloud providers as well as enterprise IT departments
 
 ## Documentation
 
-To get started with gcp:
+To get started with generic control plane:
 
 ```bash
 # Clone the repository
@@ -37,7 +37,7 @@ kubectl api-resources
 
 ## Contributing
 
-We ❤️ our contributors! If you're interested in helping us out, please check out [contributing to gcp](CONTRIBUTING.md).
+We ❤️ our contributors! If you're interested in helping us out, please check out [contributing to Generic Control Plane](CONTRIBUTING.md).
 
 This community has a [Code of Conduct](./code-of-conduct.md). Please make sure to follow it.
 
