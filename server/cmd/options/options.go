@@ -23,7 +23,7 @@ import (
 	"os"
 	"path/filepath"
 
-	gcpadmission "github.com/kcp-dev/generic-controlplane/server/admission"
+	etcdoptions "github.com/kcp-dev/kcp/pkg/embeddedetcd/options"
 
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
@@ -33,7 +33,7 @@ import (
 	controlplaneapiserveroptions "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 
-	etcdoptions "github.com/kcp-dev/kcp/pkg/embeddedetcd/options"
+	gcpadmission "github.com/kcp-dev/generic-controlplane/server/admission"
 )
 
 type Options struct {

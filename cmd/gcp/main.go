@@ -19,7 +19,7 @@ package main
 import (
 	"os"
 
-	server "github.com/kcp-dev/generic-controlplane/server/cmd"
+	"github.com/kcp-dev/kcp/cli/pkg/help"
 	"github.com/spf13/cobra"
 
 	"k8s.io/component-base/cli"
@@ -27,7 +27,7 @@ import (
 	_ "k8s.io/component-base/metrics/prometheus/clientgo"
 	_ "k8s.io/component-base/metrics/prometheus/version"
 
-	"github.com/kcp-dev/kcp/cli/pkg/help"
+	server "github.com/kcp-dev/generic-controlplane/server/cmd"
 )
 
 func main() {

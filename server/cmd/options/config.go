@@ -17,6 +17,8 @@ limitations under the License.
 package options
 
 import (
+	"github.com/kcp-dev/kcp/pkg/embeddedetcd"
+
 	apiextensionsapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/util/webhook"
@@ -26,8 +28,6 @@ import (
 	"k8s.io/kubernetes/pkg/controlplane"
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
-
-	"github.com/kcp-dev/kcp/pkg/embeddedetcd"
 )
 
 type Config struct {

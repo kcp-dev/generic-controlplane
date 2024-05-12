@@ -23,7 +23,8 @@ import (
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
-	options "github.com/kcp-dev/generic-controlplane/server/cmd/options"
+	"github.com/kcp-dev/kcp/cli/pkg/help"
+	"github.com/kcp-dev/kcp/pkg/embeddedetcd"
 	"github.com/spf13/cobra"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -49,8 +50,7 @@ import (
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
 	_ "k8s.io/kubernetes/pkg/features"
 
-	"github.com/kcp-dev/kcp/cli/pkg/help"
-	"github.com/kcp-dev/kcp/pkg/embeddedetcd"
+	options "github.com/kcp-dev/generic-controlplane/server/cmd/options"
 	// add the kubernetes feature gates
 )
 

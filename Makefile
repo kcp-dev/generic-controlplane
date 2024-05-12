@@ -136,7 +136,7 @@ $(OPENSHIFT_GOIMPORTS):
 
 .PHONY: imports
 imports: $(OPENSHIFT_GOIMPORTS) verify-go-versions
-	$(OPENSHIFT_GOIMPORTS) -m github.com/kcp-dev/kcp
+	$(OPENSHIFT_GOIMPORTS) -m github.com/kcp-dev/generic-controlplane
 
 $(TOOLS_DIR)/verify_boilerplate.py:
 	mkdir -p $(TOOLS_DIR)
