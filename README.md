@@ -1,4 +1,4 @@
-# <img alt="Logo" width="80px" src="./contrib/logo/blue-green.png" style="vertical-align: middle;" /> Generic Control Plane
+# Generic Control Plane
 
 # IMPORTANT:
 
