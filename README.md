@@ -1,5 +1,9 @@
 # <img alt="Logo" width="80px" src="./contrib/logo/blue-green.png" style="vertical-align: middle;" /> Generic Control Plane
 
+# IMPORTANT:
+
+Generic Control Plane (gcp) is a new project under KCP umbrella and is not yet ready for production use. We are actively working on the project and welcome contributions from the community. If you are interested in contributing, please see our [contributing guide](CONTRIBUTING.md).
+
 ## Overview
 
 Generic Control plane (gcp) is a Kubernetes control plane focusing on:
