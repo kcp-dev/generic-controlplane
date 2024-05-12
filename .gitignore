@@ -2,3 +2,5 @@
 **__debug*
 .vscode
 vendor
+hack/tools/*
+bin/*

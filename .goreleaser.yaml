@@ -1,0 +1,27 @@
+
+builds:
+- id: "gcp"
+  main: ./cmd/gcp
+  binary: bin/gcp
+  ldflags:
+  - "{{ .Env.LDFLAGS }}"
+  goos:
+  - linux
+  - darwin
+  goarch:
+  - amd64
+  - arm64
+  - ppc64le
+  ignore:
+  - goos: darwin
+    goarch: ppc64le
+  env:
+  - CGO_ENABLED=0
+archives:
+- id: gcp
+  builds:
+  - gcp
+
+release:
+  draft: true
+  mode: keep-existing
