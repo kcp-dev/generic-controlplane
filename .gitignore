@@ -1,0 +1,6 @@
+.gcp
+**__debug*
+.vscode
+vendor
+hack/tools/*
+bin/*

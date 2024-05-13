@@ -1,5 +1,5 @@
 /*
-Copyright 2023 The Kubernetes Authors.
+Copyright 2024 The KCP Authors.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,24 +14,36 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// sample-minimal-controlplane is a kube-like generic control plane
-// It is compatible to kube-apiserver, but lacks the container domain
-// specific APIs.
 package main
 
 import (
 	"os"
+
+	"github.com/kcp-dev/kcp/cli/pkg/help"
+	"github.com/spf13/cobra"
 
 	"k8s.io/component-base/cli"
 	_ "k8s.io/component-base/logs/json/register"
 	_ "k8s.io/component-base/metrics/prometheus/clientgo"
 	_ "k8s.io/component-base/metrics/prometheus/version"
 
-	"k8s.io/kubernetes/cmd/sample-minimal-controlplane/server"
+	server "github.com/kcp-dev/generic-controlplane/server/cmd"
 )
 
 func main() {
+	cmd := &cobra.Command{
+		Use:   "gcp",
+		Short: "Generic Control Plane (GCP)",
+		Long: help.Doc(`
+			GCP is a generic control plane server, a system serving APIs like Kubernetes, but without the container domain specific APIs.
+		`),
+		SilenceUsage:  true,
+		SilenceErrors: true,
+	}
+
 	command := server.NewCommand()
-	code := cli.Run(command)
+	cmd.AddCommand(command)
+
+	code := cli.Run(cmd)
 	os.Exit(code)
 }
