@@ -1,8 +1,8 @@
 presubmits:
-  - name: pull-kcp-verify
+  - name: pull-gcp-verify
     always_run: true
     decorate: true
-    clone_uri: "https://github.com/kcp-dev/kcp"
+    clone_uri: "https://github.com/kcp-dev/generic-controlplane"
     labels:
       preset-goproxy: "true"
     spec:
@@ -11,8 +11,6 @@ presubmits:
           command:
             - make
             - verify-boilerplate
-            - verify-modules
-            - verify-k8s-deps
             - verify-imports
           resources:
             requests:
@@ -22,7 +20,7 @@ presubmits:
   - name: pull-gco-lint
     always_run: true
     decorate: true
-    clone_uri: "https://github.com/kcp-dev/kcp"
+    clone_uri: "https://github.com/kcp-dev/generic-controlplane"
     labels:
       preset-goproxy: "true"
     spec:
@@ -49,7 +47,7 @@ presubmits:
             - hack/build-image.sh
           env:
             - name: DRY_RUN
-              value: '1'
+              value: "1"
           # docker-in-docker needs privileged mode
           securityContext:
             privileged: true
@@ -72,9 +70,8 @@ presubmits:
             - test
           env:
             - name: USE_GOTESTSUM
-              value: '1'
+              value: "1"
           resources:
             requests:
               memory: 4Gi
               cpu: 2
-

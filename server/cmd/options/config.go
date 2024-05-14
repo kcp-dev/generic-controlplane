@@ -30,6 +30,7 @@ import (
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 )
 
+// Config holds the configuration for the generic controlplane server.
 type Config struct {
 	Options CompletedOptions
 
@@ -41,6 +42,7 @@ type Config struct {
 	ExtraConfig
 }
 
+// ExtraConfig holds the extra configuration for the generic controlplane server.
 type ExtraConfig struct {
 	// authentication
 	GcpAdminToken, UserToken string
@@ -58,11 +60,13 @@ type completedConfig struct {
 	ExtraConfig
 }
 
+// CompletedConfig holds the completed configuration for the generic controlplane server.
 type CompletedConfig struct {
 	// Embed a private pointer that cannot be instantiated outside of this package.
 	*completedConfig
 }
 
+// Complete fills in any fields not set that are required to have valid data.
 func (c *Config) Complete() (CompletedConfig, error) {
 	return CompletedConfig{&completedConfig{
 		Options: c.Options,

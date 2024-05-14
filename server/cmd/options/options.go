@@ -36,6 +36,7 @@ import (
 	gcpadmission "github.com/kcp-dev/generic-controlplane/server/admission"
 )
 
+// Options holds the configuration for the generic controlplane server.
 type Options struct {
 	GenericControlPlane controlplaneapiserveroptions.Options
 	EmbeddedEtcd        etcdoptions.Options
@@ -45,6 +46,7 @@ type Options struct {
 	Extra ExtraOptions
 }
 
+// ExtraOptions holds the extra configuration for the generic controlplane server.
 type ExtraOptions struct {
 	RootDir string
 }
@@ -58,6 +60,7 @@ type completedOptions struct {
 	Extra ExtraOptions
 }
 
+// CompletedOptions holds the completed configuration for the generic controlplane server.
 type CompletedOptions struct {
 	*completedOptions
 }
@@ -99,6 +102,7 @@ func NewOptions(rootDir string) *Options {
 	return o
 }
 
+// AddFlags adds flags for a specific APIServer to the specified FlagSet.
 func (o *Options) AddFlags(fss *cliflag.NamedFlagSets) {
 	o.GenericControlPlane.AddFlags(fss)
 
@@ -112,6 +116,7 @@ func (o *Options) AddFlags(fss *cliflag.NamedFlagSets) {
 	// Placeholders for future flags.
 }
 
+// Complete fills in any fields not set that are required to have valid data.
 func (o *Options) Complete() (*CompletedOptions, error) {
 	if servers := o.GenericControlPlane.Etcd.StorageConfig.Transport.ServerList; len(servers) == 1 && servers[0] == "embedded" {
 		klog.Background().Info("enabling embedded etcd server")
@@ -149,7 +154,6 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 	}
 
 	// override set of admission plugins
-	//spew.Dump(o.GenericControlPlane.Admission.GenericAdmission.Plugins)
 	gcpadmission.RegisterAllAdmissionPlugins(o.GenericControlPlane.Admission.GenericAdmission.Plugins)
 	o.GenericControlPlane.Admission.GenericAdmission.DisablePlugins = sets.List[string](gcpadmission.DefaultOffAdmissionPlugins())
 	o.GenericControlPlane.Admission.GenericAdmission.RecommendedPluginOrder = gcpadmission.AllOrderedPlugins
@@ -197,6 +201,7 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 	}, nil
 }
 
+// Validate validates the generic controlplane server options.
 func (o *CompletedOptions) Validate() []error {
 	var errs []error
 

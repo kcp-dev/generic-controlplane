@@ -41,6 +41,7 @@ const (
 	gcpUserUserName = "user"
 )
 
+// AdminAuthentication holds the configuration for the admin authentication in standalone mode.
 type AdminAuthentication struct {
 	KubeConfigPath string
 
@@ -48,6 +49,8 @@ type AdminAuthentication struct {
 	ShardAdminTokenHashFilePath string
 }
 
+// NewAdminAuthentication returns a new AdminAuthentication for the given root directory
+// where the kubeconfig and the token hash file should be written.
 func NewAdminAuthentication(rootDir string) *AdminAuthentication {
 	return &AdminAuthentication{
 		KubeConfigPath:              filepath.Join(rootDir, "admin.kubeconfig"),
@@ -55,6 +58,7 @@ func NewAdminAuthentication(rootDir string) *AdminAuthentication {
 	}
 }
 
+// Validate validates the admin authentication configuration.
 func (s *AdminAuthentication) Validate() []error {
 	if s == nil {
 		return nil
@@ -69,6 +73,7 @@ func (s *AdminAuthentication) Validate() []error {
 	return errs
 }
 
+// AddFlags adds the flags for the admin authentication to the given FlagSet.
 func (s *AdminAuthentication) AddFlags(fs *pflag.FlagSet) {
 	if s == nil {
 		return
@@ -118,6 +123,7 @@ func (s *AdminAuthentication) ApplyTo(config *genericapiserver.Config) (volatile
 	return volatileGcpAdminToken, volatileUserToken, nil
 }
 
+// WriteKubeConfig writes the kubeconfig to the configured path.
 func (s *AdminAuthentication) WriteKubeConfig(config genericapiserver.CompletedConfig, gcpAdminToken, userToken string) error {
 	externalCACert, _ := config.SecureServing.Cert.CurrentCertKeyContent()
 	externalKubeConfigHost := fmt.Sprintf("https://%s", config.ExternalAddress)

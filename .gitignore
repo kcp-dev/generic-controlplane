@@ -3,4 +3,4 @@
 .vscode
 vendor
 hack/tools/*
-bin/*
+bin/gcp
