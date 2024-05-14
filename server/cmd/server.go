@@ -28,9 +28,9 @@ import (
 	"github.com/spf13/cobra"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
-	utilerrors "k8s.io/apimachinery/pkg/util/errors"
+	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	_ "k8s.io/apiserver/pkg/admission"
+	_ "k8s.io/apiserver/pkg/admission" // for admission plugins
 	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
@@ -41,14 +41,14 @@ import (
 	"k8s.io/component-base/cli/globalflag"
 	"k8s.io/component-base/logs"
 	logsapi "k8s.io/component-base/logs/api/v1"
-	_ "k8s.io/component-base/metrics/prometheus/workqueue"
+	_ "k8s.io/component-base/metrics/prometheus/workqueue" // for workqueue metrics
 	"k8s.io/component-base/term"
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
 	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	_ "k8s.io/kubernetes/pkg/features"
+	_ "k8s.io/kubernetes/pkg/features" // add the kubernetes feature gates
 
 	options "github.com/kcp-dev/generic-controlplane/server/cmd/options"
 	// add the kubernetes feature gates
@@ -108,7 +108,7 @@ APIs.`,
 			}
 
 			if errs := completedOptions.Validate(); len(errs) != 0 {
-				return utilerrors.NewAggregate(errs)
+				return kerrors.NewAggregate(errs)
 			}
 
 			// add feature enablement metrics

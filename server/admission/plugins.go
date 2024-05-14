@@ -45,7 +45,7 @@ var AllOrderedPlugins = []string{
 	autoprovision.PluginName, // NamespaceAutoProvision
 	lifecycle.PluginName,     // NamespaceLifecycle
 	exists.PluginName,        // NamespaceExists
-	//limitranger.PluginName,            // LimitRanger
+	// limitranger.PluginName,            // LimitRanger
 	serviceaccount.PluginName,         // ServiceAccount
 	eventratelimit.PluginName,         // EventRateLimit
 	gc.PluginName,                     // OwnerReferencesPermissionEnforcement
@@ -70,7 +70,7 @@ func RegisterAllAdmissionPlugins(plugins *admission.Plugins) {
 	autoprovision.Register(plugins)
 	lifecycle.Register(plugins)
 	exists.Register(plugins)
-	//limitranger.Register(plugins)
+	// limitranger.Register(plugins)
 	serviceaccount.Register(plugins)
 	eventratelimit.Register(plugins)
 	gc.Register(plugins)
@@ -89,7 +89,7 @@ func RegisterAllAdmissionPlugins(plugins *admission.Plugins) {
 func DefaultOffAdmissionPlugins() sets.Set[string] {
 	defaultOnPlugins := sets.New(
 		lifecycle.PluginName, // NamespaceLifecycle
-		//limitranger.PluginName,               // LimitRanger
+		// limitranger.PluginName,               // LimitRanger
 		serviceaccount.PluginName,            // ServiceAccount
 		defaulttolerationseconds.PluginName,  // DefaultTolerationSeconds
 		mutatingwebhook.PluginName,           // MutatingAdmissionWebhook
