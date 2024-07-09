@@ -32,13 +32,13 @@ import (
 	"k8s.io/client-go/util/keyutil"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/klog/v2"
-	serviceaccountcontroller "k8s.io/kubernetes/pkg/controller/serviceaccount"
 	controlplaneapiserveroptions "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
 	"k8s.io/kubernetes/pkg/features"
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 
 	gcpadmission "github.com/kcp-dev/generic-controlplane/server/admission"
+	"github.com/kcp-dev/generic-controlplane/server/tokengetter"
 )
 
 // Options holds the configuration for the generic controlplane server.
@@ -86,13 +86,7 @@ func NewOptions(rootDir string) *Options {
 	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false)
 
 	factory := func(factory informers.SharedInformerFactory) serviceaccount.ServiceAccountTokenGetter {
-		return serviceaccountcontroller.NewGetterFromClient(
-			nil,
-			factory.Core().V1().Secrets().Lister(),
-			factory.Core().V1().ServiceAccounts().Lister(),
-			nil,
-			nil,
-		)
+		return tokengetter.NewGetterFromClient(factory.Core().V1().Secrets().Lister(), factory.Core().V1().ServiceAccounts().Lister())
 	}
 
 	// override for standalone mode
