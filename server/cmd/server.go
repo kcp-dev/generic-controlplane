@@ -22,7 +22,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/kcp-dev/kcp/cli/pkg/help"
 	"github.com/kcp-dev/kcp/pkg/embeddedetcd"
 	"github.com/spf13/cobra"
@@ -206,7 +205,6 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 	}
 
 	// write the kubeconfig file as close to the start of the server as possible
-	spew.Dump(completed.ExtraConfig)
 	err = completed.Options.AdminAuthentication.WriteKubeConfig(completed.ControlPlane.Generic, completed.ExtraConfig.GcpAdminToken, completed.ExtraConfig.UserToken)
 	if err != nil {
 		return err

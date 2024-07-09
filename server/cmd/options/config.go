@@ -129,6 +129,9 @@ func NewConfig(opts CompletedOptions) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	// IMPORTANT: disable the available condition controller in the aggregator
+	// to prevent it to try use Service and Endpoints resources which are not enabled in the generic controlplane.
+	aggregator.ExtraConfig.DisableAvailableConditionController = true
 	c.Aggregator = aggregator
 
 	return c, nil
