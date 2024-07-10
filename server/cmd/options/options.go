@@ -24,16 +24,21 @@ import (
 	"path/filepath"
 
 	etcdoptions "github.com/kcp-dev/kcp/pkg/embeddedetcd/options"
+	"k8s.io/client-go/informers"
 
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
+	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/client-go/util/keyutil"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/klog/v2"
 	controlplaneapiserveroptions "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
+	"k8s.io/kubernetes/pkg/features"
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
+	"k8s.io/kubernetes/pkg/serviceaccount"
 
 	gcpadmission "github.com/kcp-dev/generic-controlplane/server/admission"
+	"github.com/kcp-dev/generic-controlplane/server/tokengetter"
 )
 
 // Options holds the configuration for the generic controlplane server.
@@ -76,6 +81,14 @@ func NewOptions(rootDir string) *Options {
 		},
 	}
 
+	// Disable node related features to prevent the need for informers.
+	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBindingValidation, false)
+	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false)
+
+	factory := func(factory informers.SharedInformerFactory) serviceaccount.ServiceAccountTokenGetter {
+		return tokengetter.NewGetterFromClient(factory.Core().V1().Secrets().Lister(), factory.Core().V1().ServiceAccounts().Lister())
+	}
+
 	// override for standalone mode
 	o.GenericControlPlane.SecureServing.ServerCert.CertDirectory = rootDir
 	// We use KCP form of the authentication options as it does not contain nodes and pods
@@ -88,7 +101,9 @@ func NewOptions(rootDir string) *Options {
 		WithRequestHeader().
 		WithServiceAccounts().
 		WithTokenFile().
-		WithWebHook()
+		WithWebHook().
+		WithTokenGetterFunction(factory)
+
 	o.GenericControlPlane.Authentication.ServiceAccounts.Issuers = []string{"https://gcp.default.svc"}
 	o.GenericControlPlane.Etcd.StorageConfig.Transport.ServerList = []string{"embedded"}
 	o.GenericControlPlane.Features.EnablePriorityAndFairness = false
