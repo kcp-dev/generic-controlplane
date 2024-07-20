@@ -50,6 +50,7 @@ import (
 	_ "k8s.io/kubernetes/pkg/features" // add the kubernetes feature gates
 
 	options "github.com/kcp-dev/generic-controlplane/server/cmd/options"
+	"github.com/kcp-dev/generic-controlplane/server/readiness"
 	// add the kubernetes feature gates
 )
 
@@ -210,7 +211,24 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 		return err
 	}
 
-	return prepared.Run(ctx)
+	// Run the server and wait for readiness
+
+	go func() {
+		if err := prepared.Run(ctx); err != nil {
+			klog.Fatal(err, "Failed to run server")
+		}
+	}()
+
+	// wait for the server to be ready
+	klog.Info("Waiting for control plane to be ready")
+	err = readiness.WaitForReady(ctx, completed.Options.AdminAuthentication.KubeConfigPath)
+	if err != nil {
+		return err
+	}
+
+	<-ctx.Done()
+
+	return nil
 }
 
 // createServerChain creates the apiservers connected via delegation.

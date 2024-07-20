@@ -3,27 +3,27 @@ module github.com/kcp-dev/generic-controlplane
 go 1.22.2
 
 replace (
-	k8s.io/api => github.com/kubernetes/kubernetes/staging/src/k8s.io/api v0.0.0-20240709130204-42064e03c51d
-	k8s.io/apiextensions-apiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiextensions-apiserver v0.0.0-20240709130204-42064e03c51d
-	k8s.io/apimachinery => github.com/kubernetes/kubernetes/staging/src/k8s.io/apimachinery v0.0.0-20240709130204-42064e03c51d
-	k8s.io/apiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240709130204-42064e03c51d
-	k8s.io/client-go => github.com/kubernetes/kubernetes/staging/src/k8s.io/client-go v0.0.0-20240709130204-42064e03c51d
-	k8s.io/cloud-provider => github.com/kubernetes/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20240709130204-42064e03c51d
-	k8s.io/cluster-bootstrap => github.com/kubernetes/kubernetes/staging/src/k8s.io/cluster-bootstrap v0.0.0-20240709130204-42064e03c51d
-	k8s.io/component-base => github.com/kubernetes/kubernetes/staging/src/k8s.io/component-base v0.0.0-20240709130204-42064e03c51d
-	k8s.io/component-helpers => github.com/kubernetes/kubernetes/staging/src/k8s.io/component-helpers v0.0.0-20240709130204-42064e03c51d
-	k8s.io/controller-manager => github.com/kubernetes/kubernetes/staging/src/k8s.io/controller-manager v0.0.0-20240709130204-42064e03c51d
-	k8s.io/cri-api => github.com/kubernetes/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20240709130204-42064e03c51d
-	k8s.io/cri-client => github.com/kubernetes/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20240709130204-42064e03c51d
-	k8s.io/csi-translation-lib => github.com/kubernetes/kubernetes/staging/src/k8s.io/csi-translation-lib v0.0.0-20240709130204-42064e03c51d
-	k8s.io/dynamic-resource-allocation => github.com/kubernetes/kubernetes/staging/src/k8s.io/dynamic-resource-allocation v0.0.0-20240709130204-42064e03c51d
-	k8s.io/kms => github.com/kubernetes/kubernetes/staging/src/k8s.io/kms v0.0.0-20240709130204-42064e03c51d
-	k8s.io/kube-aggregator => github.com/kubernetes/kubernetes/staging/src/k8s.io/kube-aggregator v0.0.0-20240709130204-42064e03c51d
-	k8s.io/kubelet => github.com/kubernetes/kubernetes/staging/src/k8s.io/kubelet v0.0.0-20240709130204-42064e03c51d
-	k8s.io/kubernetes => github.com/kubernetes/kubernetes v0.0.0-20240709130204-42064e03c51d
-	k8s.io/kubernetes/pkg/kubeapiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240709130204-42064e03c51d
-	k8s.io/mount-utils => github.com/kubernetes/kubernetes/staging/src/k8s.io/mount-utils v0.0.0-20240709130204-42064e03c51d
-	k8s.io/pod-security-admission => github.com/kubernetes/kubernetes/staging/src/k8s.io/pod-security-admission v0.0.0-20240709130204-42064e03c51d
+	k8s.io/api => github.com/sttts/kubernetes/staging/src/k8s.io/api v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/apiextensions-apiserver => github.com/sttts/kubernetes/staging/src/k8s.io/apiextensions-apiserver v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/apimachinery => github.com/sttts/kubernetes/staging/src/k8s.io/apimachinery v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/apiserver => github.com/sttts/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/client-go => github.com/sttts/kubernetes/staging/src/k8s.io/client-go v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/cloud-provider => github.com/sttts/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/cluster-bootstrap => github.com/sttts/kubernetes/staging/src/k8s.io/cluster-bootstrap v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/component-base => github.com/sttts/kubernetes/staging/src/k8s.io/component-base v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/component-helpers => github.com/sttts/kubernetes/staging/src/k8s.io/component-helpers v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/controller-manager => github.com/sttts/kubernetes/staging/src/k8s.io/controller-manager v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/cri-api => github.com/sttts/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/cri-client => github.com/sttts/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/csi-translation-lib => github.com/sttts/kubernetes/staging/src/k8s.io/csi-translation-lib v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/dynamic-resource-allocation => github.com/sttts/kubernetes/staging/src/k8s.io/dynamic-resource-allocation v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/kms => github.com/sttts/kubernetes/staging/src/k8s.io/kms v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/kube-aggregator => github.com/sttts/kubernetes/staging/src/k8s.io/kube-aggregator v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/kubelet => github.com/sttts/kubernetes/staging/src/k8s.io/kubelet v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/kubernetes => github.com/sttts/kubernetes v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/kubernetes/pkg/kubeapiserver => github.com/sttts/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/mount-utils => github.com/sttts/kubernetes/staging/src/k8s.io/mount-utils v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/pod-security-admission => github.com/sttts/kubernetes/staging/src/k8s.io/pod-security-admission v0.0.0-20240717102225-436d5eeedfea
 
 )
 
@@ -45,7 +45,7 @@ require (
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
-	github.com/MakeNowJust/heredoc v1.0.0 // indirect
+	github.com/MakeNowJust/heredoc v1.0.0 // indirect; indifswarect
 	github.com/NYTimes/gziphandler v1.1.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
@@ -157,7 +157,7 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.30.0 // indirect
+	k8s.io/api v0.30.0
 	k8s.io/cloud-provider v0.30.0 // indirect
 	k8s.io/cluster-bootstrap v0.30.0 // indirect
 	k8s.io/component-helpers v0.30.0 // indirect
@@ -168,7 +168,7 @@ require (
 	k8s.io/kubelet v0.30.0 // indirect
 	k8s.io/mount-utils v0.30.0 // indirect
 	k8s.io/pod-security-admission v0.30.0 // indirect
-	k8s.io/utils v0.0.0-20240502163921-fe8a2dddb1d0 // indirect
+	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.30.3 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
