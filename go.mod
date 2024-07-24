@@ -3,27 +3,27 @@ module github.com/kcp-dev/generic-controlplane
 go 1.22.2
 
 replace (
-	k8s.io/api => github.com/sttts/kubernetes/staging/src/k8s.io/api v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/apiextensions-apiserver => github.com/sttts/kubernetes/staging/src/k8s.io/apiextensions-apiserver v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/apimachinery => github.com/sttts/kubernetes/staging/src/k8s.io/apimachinery v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/apiserver => github.com/sttts/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/client-go => github.com/sttts/kubernetes/staging/src/k8s.io/client-go v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/cloud-provider => github.com/sttts/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/cluster-bootstrap => github.com/sttts/kubernetes/staging/src/k8s.io/cluster-bootstrap v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/component-base => github.com/sttts/kubernetes/staging/src/k8s.io/component-base v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/component-helpers => github.com/sttts/kubernetes/staging/src/k8s.io/component-helpers v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/controller-manager => github.com/sttts/kubernetes/staging/src/k8s.io/controller-manager v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/cri-api => github.com/sttts/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/cri-client => github.com/sttts/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/csi-translation-lib => github.com/sttts/kubernetes/staging/src/k8s.io/csi-translation-lib v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/dynamic-resource-allocation => github.com/sttts/kubernetes/staging/src/k8s.io/dynamic-resource-allocation v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/kms => github.com/sttts/kubernetes/staging/src/k8s.io/kms v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/kube-aggregator => github.com/sttts/kubernetes/staging/src/k8s.io/kube-aggregator v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/kubelet => github.com/sttts/kubernetes/staging/src/k8s.io/kubelet v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/kubernetes => github.com/sttts/kubernetes v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/kubernetes/pkg/kubeapiserver => github.com/sttts/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/mount-utils => github.com/sttts/kubernetes/staging/src/k8s.io/mount-utils v0.0.0-20240717102225-436d5eeedfea
-	k8s.io/pod-security-admission => github.com/sttts/kubernetes/staging/src/k8s.io/pod-security-admission v0.0.0-20240717102225-436d5eeedfea
+	k8s.io/api => github.com/kubernetes/kubernetes/staging/src/k8s.io/api v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/apiextensions-apiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiextensions-apiserver v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/apimachinery => github.com/kubernetes/kubernetes/staging/src/k8s.io/apimachinery v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/apiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/client-go => github.com/kubernetes/kubernetes/staging/src/k8s.io/client-go v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/cloud-provider => github.com/kubernetes/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/cluster-bootstrap => github.com/kubernetes/kubernetes/staging/src/k8s.io/cluster-bootstrap v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/component-base => github.com/kubernetes/kubernetes/staging/src/k8s.io/component-base v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/component-helpers => github.com/kubernetes/kubernetes/staging/src/k8s.io/component-helpers v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/controller-manager => github.com/kubernetes/kubernetes/staging/src/k8s.io/controller-manager v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/cri-api => github.com/kubernetes/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/cri-client => github.com/kubernetes/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/csi-translation-lib => github.com/kubernetes/kubernetes/staging/src/k8s.io/csi-translation-lib v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/dynamic-resource-allocation => github.com/kubernetes/kubernetes/staging/src/k8s.io/dynamic-resource-allocation v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/kms => github.com/kubernetes/kubernetes/staging/src/k8s.io/kms v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/kube-aggregator => github.com/kubernetes/kubernetes/staging/src/k8s.io/kube-aggregator v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/kubelet => github.com/kubernetes/kubernetes/staging/src/k8s.io/kubelet v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/kubernetes => github.com/kubernetes/kubernetes v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/kubernetes/pkg/kubeapiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/mount-utils => github.com/kubernetes/kubernetes/staging/src/k8s.io/mount-utils v0.0.0-20240722135003-8b8f84c6a7b9
+	k8s.io/pod-security-admission => github.com/kubernetes/kubernetes/staging/src/k8s.io/pod-security-admission v0.0.0-20240722135003-8b8f84c6a7b9
 
 )
 
