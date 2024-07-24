@@ -3,5 +3,9 @@ updates:
 # Maintain dependencies for GitHub Actions
 - package-ecosystem: "github-actions"
   directory: "/"
+    commit_message:
+      prefix: ":seedling:"
+      include_scope: true
   schedule:
     interval: "daily"
+    
