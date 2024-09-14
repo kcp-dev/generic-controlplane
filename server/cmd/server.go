@@ -39,6 +39,7 @@ import (
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/cli/globalflag"
 	"k8s.io/component-base/logs"
+
 	logsapi "k8s.io/component-base/logs/api/v1"
 	_ "k8s.io/component-base/metrics/prometheus/workqueue" // for workqueue metrics
 	"k8s.io/component-base/term"
@@ -55,7 +56,7 @@ import (
 )
 
 // Order for settings:
-// Options -> CompletedOptions -> Config -> CompletedOptions -> Server -> Prepared -> Run
+// Options -> CompletedOptions -> Config -> CompletedConfig -> Server -> Prepared -> Run
 
 func init() {
 	utilruntime.Must(logsapi.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
@@ -254,6 +255,10 @@ func createServerChain(config options.CompletedConfig) (*aggregatorapiserver.API
 	if err != nil {
 		return nil, fmt.Errorf("failed to create storage providers: %w", err)
 	}
+
+	// Filter out the disabled batteries
+	storageProviders = config.Batteries.FilterStorageProviders(storageProviders)
+
 	if err := nativeAPIs.InstallAPIs(storageProviders...); err != nil {
 		return nil, fmt.Errorf("failed to install APIs: %w", err)
 	}
@@ -267,3 +272,13 @@ func createServerChain(config options.CompletedConfig) (*aggregatorapiserver.API
 
 	return aggregatorServer, nil
 }
+
+type ControlPlaneBattery string
+
+const (
+	ControlPlaneBatteryCore        ControlPlaneBattery = "core"
+	ControlPlaneBatteryFlowControl ControlPlaneBattery = "flowcontrol"
+	ControlPlaneBatteryRBAC        ControlPlaneBattery = "rbac"
+	ControlPlaneBatteryAdmission   ControlPlaneBattery = "admission"
+	ControlPlaneBatteryLease       ControlPlaneBattery = "lease"
+)

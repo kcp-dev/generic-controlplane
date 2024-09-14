@@ -35,6 +35,29 @@ export KUBECONFIG=.gcp/admin.kubeconfig
 kubectl api-resources
 ```
 
+## Batteries
+
+Example server contains a simple implementation of batteries that can be used to extend the gcp API.
+
+Batteries:
+- `leases` - a Kubernetes lease resources from `coordination.k8s.io`
+- `authentication` - Kubernetes native authentication using `authentication.k8s.io`
+- `authorization` - Kubernetes native authorization using `authorization.k8s.io`
+- `admission` - Kubernetes native admission using `admissionregistration.k8s.io`
+- `flowcontrol` - Kubernetes native flow control using `flowcontrol.apiserver.k8s.io`
+
+
+When starting server without any flags, in-memory storage will be used and batteries will be disabled by default.
+
+Important: In the long run, we plan to move existing apis into batteries on its own, and make default server to be a simple server without any resources.
+
+To start the server with batteries enabled, use the following flags:
+
+```bash
+./bin/gcp start --batteries=lease,authentication,authorization,admission,flowcontrol
+```
+
+
 ## Contributing
 
 We ❤️ our contributors! If you're interested in helping us out, please check out [contributing to Generic Control Plane](CONTRIBUTING.md).
