@@ -2,45 +2,25 @@ module github.com/kcp-dev/generic-controlplane
 
 go 1.22.2
 
-replace (
-	k8s.io/api => github.com/kubernetes/kubernetes/staging/src/k8s.io/api v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/apiextensions-apiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiextensions-apiserver v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/apimachinery => github.com/kubernetes/kubernetes/staging/src/k8s.io/apimachinery v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/apiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/client-go => github.com/kubernetes/kubernetes/staging/src/k8s.io/client-go v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/cloud-provider => github.com/kubernetes/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/cluster-bootstrap => github.com/kubernetes/kubernetes/staging/src/k8s.io/cluster-bootstrap v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/component-base => github.com/kubernetes/kubernetes/staging/src/k8s.io/component-base v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/component-helpers => github.com/kubernetes/kubernetes/staging/src/k8s.io/component-helpers v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/controller-manager => github.com/kubernetes/kubernetes/staging/src/k8s.io/controller-manager v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/cri-api => github.com/kubernetes/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/cri-client => github.com/kubernetes/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/csi-translation-lib => github.com/kubernetes/kubernetes/staging/src/k8s.io/csi-translation-lib v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/dynamic-resource-allocation => github.com/kubernetes/kubernetes/staging/src/k8s.io/dynamic-resource-allocation v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/kms => github.com/kubernetes/kubernetes/staging/src/k8s.io/kms v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/kube-aggregator => github.com/kubernetes/kubernetes/staging/src/k8s.io/kube-aggregator v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/kubelet => github.com/kubernetes/kubernetes/staging/src/k8s.io/kubelet v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/kubernetes => github.com/kubernetes/kubernetes v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/kubernetes/pkg/kubeapiserver => github.com/kubernetes/kubernetes/staging/src/k8s.io/apiserver v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/mount-utils => github.com/kubernetes/kubernetes/staging/src/k8s.io/mount-utils v0.0.0-20240722135003-8b8f84c6a7b9
-	k8s.io/pod-security-admission => github.com/kubernetes/kubernetes/staging/src/k8s.io/pod-security-admission v0.0.0-20240722135003-8b8f84c6a7b9
-
-)
-
 require (
 	github.com/google/uuid v1.6.0
 	github.com/kcp-dev/kcp v0.24.0
 	github.com/kcp-dev/kcp/cli v0.24.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.6-0.20210604193023-d5e0c0615ace
-	k8s.io/apiextensions-apiserver v0.30.0
-	k8s.io/apimachinery v0.30.0
-	k8s.io/apiserver v0.30.0
-	k8s.io/client-go v1.5.2
-	k8s.io/component-base v0.30.0
+	k8s.io/apiextensions-apiserver v0.31.0
+	k8s.io/apimachinery v0.31.1
+	k8s.io/apiserver v0.31.1
+	k8s.io/client-go v0.31.1
+	k8s.io/component-base v0.31.1
 	k8s.io/klog/v2 v2.130.1
-	k8s.io/kube-aggregator v0.30.0
-	k8s.io/kubernetes v1.30.0
+	k8s.io/kube-aggregator v0.31.0
+	k8s.io/kubernetes v1.31.0
+)
+
+require (
+	k8s.io/cri-client v0.31.0 // indirect
+	k8s.io/csi-translation-lib v0.31.0 // indirect
 )
 
 require (
@@ -69,7 +49,6 @@ require (
 	github.com/go-openapi/jsonpointer v0.21.0 // indirect
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
-	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -100,8 +79,6 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/runc v1.1.13 // indirect
-	github.com/opencontainers/runtime-spec v1.2.0 // indirect
 	github.com/opencontainers/selinux v1.11.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
@@ -157,15 +134,15 @@ require (
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.30.0
+	k8s.io/api v0.31.1
 	k8s.io/cloud-provider v0.30.0 // indirect
 	k8s.io/cluster-bootstrap v0.30.0 // indirect
-	k8s.io/component-helpers v0.30.0 // indirect
+	k8s.io/component-helpers v0.31.1 // indirect
 	k8s.io/controller-manager v0.30.0 // indirect
-	k8s.io/dynamic-resource-allocation v0.30.0 // indirect
-	k8s.io/kms v0.30.0 // indirect
+	k8s.io/dynamic-resource-allocation v0.31.1 // indirect
+	k8s.io/kms v0.31.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240430033511-f0e62f92d13f // indirect
-	k8s.io/kubelet v0.30.0 // indirect
+	k8s.io/kubelet v0.31.1 // indirect
 	k8s.io/mount-utils v0.30.0 // indirect
 	k8s.io/pod-security-admission v0.30.0 // indirect
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8 // indirect

@@ -45,10 +45,21 @@ func WaitForReady(ctx context.Context, kubeConfigPath string) error {
 		if _, err := res.Raw(); err != nil {
 			unreadyComponents := unreadyComponentsFromError(err)
 			if !lastSeenUnready.Equal(unreadyComponents) {
-				logger.Info("control plane not ready", "unreadyComponents", sets.List[string](unreadyComponents))
+				logger.Error(err, "control plane not ready", "unreadyComponents", sets.List[string](unreadyComponents), "error", err)
 				lastSeenUnready = unreadyComponents
 			}
 		}
+
+		// When there is an error for invalid certificate, we should exit immediately
+		// as there is no point in retrying.
+		if res.Error() != nil {
+			if strings.Contains(res.Error().Error(), "failed to verify certificate: x509") {
+				logger.Error(res.Error(), "control plane not ready")
+				logger.Info("This is likely due to certificates folder containing invalid certificates. Please fix them and restart the control plane.")
+				return res.Error()
+			}
+		}
+
 		var rc int
 		res.StatusCode(&rc)
 		if rc == http.StatusOK {

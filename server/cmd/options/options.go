@@ -101,8 +101,9 @@ func NewOptions(rootDir string) *Options {
 		WithRequestHeader().
 		WithServiceAccounts().
 		WithTokenFile().
-		WithWebHook().
-		WithTokenGetterFunction(factory)
+		WithWebHook()
+
+	o.GenericControlPlane.Authentication.ServiceAccounts.OptionalTokenGetter = factory
 
 	o.GenericControlPlane.Authentication.ServiceAccounts.Issuers = []string{"https://gcp.default.svc"}
 	o.GenericControlPlane.Etcd.StorageConfig.Transport.ServerList = []string{"embedded"}
