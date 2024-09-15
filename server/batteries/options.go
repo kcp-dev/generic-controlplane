@@ -32,7 +32,7 @@ func (s *Batteries) AddFlags(fs *pflag.FlagSet) {
 		return
 	}
 
-	fs.StringArrayVar(&s.BatteriesArgs, "batteries", []string{}, "The batteries to enable in the generic control-plane server.")
+	fs.StringSliceVar(&s.BatteriesArgs, "batteries", []string{}, "The batteries to enable in the generic control-plane server.")
 }
 
 func (b Batteries) Complete() {

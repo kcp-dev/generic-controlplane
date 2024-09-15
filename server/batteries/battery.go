@@ -56,6 +56,8 @@ const (
 	BatteryAdmission Battery = "admission"
 	// BatteryFlowControl is the name of the flow control battery.
 	BatteryFlowControl Battery = "flowcontrol"
+	// BatteryCRDs is the name of the CRD battery.
+	BatteryCRDs Battery = "crds"
 )
 
 var (
@@ -66,6 +68,7 @@ var (
 		BatteryAuthorization:  {Enabled: false, GroupNames: []string{"authorization.k8s.io", "rbac.authorization.k8s.io"}},
 		BatteryAdmission:      {Enabled: false, GroupNames: []string{"admissionregistration.k8s.io"}},
 		BatteryFlowControl:    {Enabled: false, GroupNames: []string{"flowcontrol.apiserver.k8s.io"}},
+		BatteryCRDs:           {Enabled: false, GroupNames: []string{"apiextensions.k8s.io"}},
 	}
 )
 
