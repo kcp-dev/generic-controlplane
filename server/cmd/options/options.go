@@ -37,7 +37,7 @@ import (
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 
-	gcpadmission "github.com/kcp-dev/generic-controlplane/server/admission"
+	"github.com/kcp-dev/generic-controlplane/server/batteries"
 	"github.com/kcp-dev/generic-controlplane/server/tokengetter"
 )
 
@@ -53,7 +53,8 @@ type Options struct {
 
 // ExtraOptions holds the extra configuration for the generic controlplane server.
 type ExtraOptions struct {
-	RootDir string
+	RootDir   string
+	Batteries batteries.Batteries
 }
 
 type completedOptions struct {
@@ -77,7 +78,8 @@ func NewOptions(rootDir string) *Options {
 		EmbeddedEtcd:        *etcdoptions.NewOptions(rootDir),
 		AdminAuthentication: *NewAdminAuthentication(rootDir),
 		Extra: ExtraOptions{
-			RootDir: rootDir,
+			RootDir:   rootDir,
+			Batteries: batteries.New(),
 		},
 	}
 
@@ -128,8 +130,7 @@ func (o *Options) AddFlags(fss *cliflag.NamedFlagSets) {
 	o.EmbeddedEtcd.AddFlags(fss.FlagSet("Embedded etcd"))
 	o.AdminAuthentication.AddFlags(fss.FlagSet("GCP Standalone Authentication"))
 
-	// fs := fss.FlagSet("GCP")
-	// Placeholders for future flags.
+	o.Extra.Batteries.AddFlags(fss.FlagSet("Batteries"))
 }
 
 // Complete fills in any fields not set that are required to have valid data.
@@ -138,6 +139,8 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 		klog.Background().Info("enabling embedded etcd server")
 		o.EmbeddedEtcd.Enabled = true
 	}
+
+	o.Extra.Batteries.Complete()
 
 	var serviceAccountFile string
 	if len(o.GenericControlPlane.Authentication.ServiceAccounts.KeyFiles) == 0 {
@@ -170,9 +173,9 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 	}
 
 	// override set of admission plugins
-	gcpadmission.RegisterAllAdmissionPlugins(o.GenericControlPlane.Admission.GenericAdmission.Plugins)
-	o.GenericControlPlane.Admission.GenericAdmission.DisablePlugins = sets.List[string](gcpadmission.DefaultOffAdmissionPlugins())
-	o.GenericControlPlane.Admission.GenericAdmission.RecommendedPluginOrder = gcpadmission.AllOrderedPlugins
+	o.Extra.Batteries.RegisterAllAdmissionPlugins(o.GenericControlPlane.Admission.GenericAdmission.Plugins)
+	o.GenericControlPlane.Admission.GenericAdmission.DisablePlugins = sets.List[string](o.Extra.Batteries.DefaultOffAdmissionPlugins())
+	o.GenericControlPlane.Admission.GenericAdmission.RecommendedPluginOrder = batteries.AllOrderedPlugins
 
 	var err error
 	if !filepath.IsAbs(o.EmbeddedEtcd.Directory) {
@@ -224,6 +227,7 @@ func (o *CompletedOptions) Validate() []error {
 	errs = append(errs, o.GenericControlPlane.Validate()...)
 	errs = append(errs, o.EmbeddedEtcd.Validate()...)
 	errs = append(errs, o.AdminAuthentication.Validate()...)
+	errs = append(errs, o.Extra.Batteries.Validate()...)
 
 	return errs
 }

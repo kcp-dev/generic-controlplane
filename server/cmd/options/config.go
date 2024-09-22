@@ -28,16 +28,20 @@ import (
 	"k8s.io/kubernetes/pkg/controlplane"
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
+
+	miniaggregator "github.com/kcp-dev/generic-controlplane/server/aggregator"
+	"github.com/kcp-dev/generic-controlplane/server/batteries"
 )
 
 // Config holds the configuration for the generic controlplane server.
 type Config struct {
 	Options CompletedOptions
 
-	EmbeddedEtcd  *embeddedetcd.Config
-	Aggregator    *aggregatorapiserver.Config
-	ControlPlane  *controlplaneapiserver.Config
-	APIExtensions *apiextensionsapiserver.Config
+	EmbeddedEtcd   *embeddedetcd.Config
+	Aggregator     *aggregatorapiserver.Config
+	MiniAggregator *miniaggregator.MiniAggregatorConfig
+	ControlPlane   *controlplaneapiserver.Config
+	APIExtensions  *apiextensionsapiserver.Config
 
 	ExtraConfig
 }
@@ -46,6 +50,8 @@ type Config struct {
 type ExtraConfig struct {
 	// authentication
 	GcpAdminToken, UserToken string
+	// Batteries holds the batteries configuration for the generic controlplane server.
+	Batteries batteries.Batteries
 }
 
 type completedConfig struct {
@@ -53,9 +59,12 @@ type completedConfig struct {
 
 	EmbeddedEtcd embeddedetcd.CompletedConfig
 
-	Aggregator    aggregatorapiserver.CompletedConfig
-	ControlPlane  controlplaneapiserver.CompletedConfig
-	APIExtensions apiextensionsapiserver.CompletedConfig
+	// Aggregator is native k8s aggregator server with all its bells and whistles.
+	Aggregator aggregatorapiserver.CompletedConfig
+	// MiniAggregator is a stripped down version of the aggregator server.
+	MiniAggregator miniaggregator.CompletedMiniAggregatorConfig
+	ControlPlane   controlplaneapiserver.CompletedConfig
+	APIExtensions  apiextensionsapiserver.CompletedConfig
 
 	ExtraConfig
 }
@@ -68,13 +77,16 @@ type CompletedConfig struct {
 
 // Complete fills in any fields not set that are required to have valid data.
 func (c *Config) Complete() (CompletedConfig, error) {
+	c.Batteries.Complete()
+
 	return CompletedConfig{&completedConfig{
 		Options: c.Options,
 
-		EmbeddedEtcd:  c.EmbeddedEtcd.Complete(),
-		ControlPlane:  c.ControlPlane.Complete(),
-		Aggregator:    c.Aggregator.Complete(),
-		APIExtensions: c.APIExtensions.Complete(),
+		EmbeddedEtcd:   c.EmbeddedEtcd.Complete(),
+		ControlPlane:   c.ControlPlane.Complete(),
+		Aggregator:     c.Aggregator.Complete(),
+		MiniAggregator: c.MiniAggregator.Complete(),
+		APIExtensions:  c.APIExtensions.Complete(),
 
 		ExtraConfig: c.ExtraConfig,
 	}}, nil
@@ -85,6 +97,9 @@ func (c *Config) Complete() (CompletedConfig, error) {
 func NewConfig(opts CompletedOptions) (*Config, error) {
 	c := &Config{
 		Options: opts,
+		ExtraConfig: ExtraConfig{
+			Batteries: opts.Extra.Batteries,
+		},
 	}
 
 	if opts.EmbeddedEtcd.Enabled {
@@ -125,14 +140,21 @@ func NewConfig(opts CompletedOptions) (*Config, error) {
 	}
 	c.APIExtensions = apiExtensions
 
-	aggregator, err := controlplaneapiserver.CreateAggregatorConfig(*kubeAPIs.Generic, opts.GenericControlPlane, kubeAPIs.VersionedInformers, serviceResolver, kubeAPIs.ProxyTransport, kubeAPIs.Extra.PeerProxy, pluginInitializer)
+	kubeAggregator, err := controlplaneapiserver.CreateAggregatorConfig(*kubeAPIs.Generic, opts.GenericControlPlane, kubeAPIs.VersionedInformers, serviceResolver, kubeAPIs.ProxyTransport, kubeAPIs.Extra.PeerProxy, pluginInitializer)
 	if err != nil {
 		return nil, err
 	}
+
 	// IMPORTANT: disable the available condition controller in the aggregator
 	// to prevent it to try use Service and Endpoints resources which are not enabled in the generic controlplane.
-	aggregator.ExtraConfig.DisableRemoteAvailableConditionController = true
-	c.Aggregator = aggregator
+	kubeAggregator.ExtraConfig.DisableRemoteAvailableConditionController = true
+	c.Aggregator = kubeAggregator
+
+	// setup mini-aggregator
+	miniAggregator := miniaggregator.MiniAggregatorConfig{
+		GenericConfig: *genericConfig,
+	}
+	c.MiniAggregator = &miniAggregator
 
 	return c, nil
 }

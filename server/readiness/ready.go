@@ -44,6 +44,7 @@ func WaitForReady(ctx context.Context, kubeConfigPath string) error {
 		res := client.RESTClient().Get().AbsPath("/readyz").Do(ctx)
 		if _, err := res.Raw(); err != nil {
 			unreadyComponents := unreadyComponentsFromError(err)
+			//logger.Error(err, "control plane not ready", "unreadyComponents", sets.List[string](unreadyComponents), "error", err)
 			if !lastSeenUnready.Equal(unreadyComponents) {
 				logger.Error(err, "control plane not ready", "unreadyComponents", sets.List[string](unreadyComponents), "error", err)
 				lastSeenUnready = unreadyComponents

@@ -26,7 +26,7 @@ import (
 	"github.com/kcp-dev/kcp/pkg/embeddedetcd"
 	"github.com/spf13/cobra"
 
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apiextensionapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	_ "k8s.io/apiserver/pkg/admission" // for admission plugins
@@ -49,13 +49,13 @@ import (
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
 	_ "k8s.io/kubernetes/pkg/features" // add the kubernetes feature gates
 
+	"github.com/kcp-dev/generic-controlplane/server/batteries"
 	options "github.com/kcp-dev/generic-controlplane/server/cmd/options"
 	"github.com/kcp-dev/generic-controlplane/server/readiness"
-	// add the kubernetes feature gates
 )
 
 // Order for settings:
-// Options -> CompletedOptions -> Config -> CompletedOptions -> Server -> Prepared -> Run
+// Options -> CompletedOptions -> Config -> CompletedConfig -> Server -> Prepared -> Run
 
 func init() {
 	utilruntime.Must(logsapi.AddFeatureGates(utilfeature.DefaultMutableFeatureGate))
@@ -214,7 +214,7 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 	// Run the server and wait for readiness
 
 	go func() {
-		if err := prepared.Run(ctx); err != nil {
+		if err := prepared.RunWithContext(ctx); err != nil {
 			klog.Fatal(err, "Failed to run server")
 		}
 	}()
@@ -232,20 +232,38 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 }
 
 // createServerChain creates the apiservers connected via delegation.
-func createServerChain(config options.CompletedConfig) (*aggregatorapiserver.APIAggregator, error) {
-	// 1. CRDs
+func createServerChain(config options.CompletedConfig) (aggregatorapiserver.APIAggregator, error) {
+	// 1. Basic not found handler
 	notFoundHandler := notfoundhandler.New(config.ControlPlane.Generic.Serializer, genericapifilters.NoMuxAndDiscoveryIncompleteKey)
-	apiExtensionsServer, err := config.APIExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create apiextensions-apiserver: %w", err)
-	}
-	crdAPIEnabled := config.APIExtensions.GenericConfig.MergedResourceConfig.ResourceEnabled(apiextensionsv1.SchemeGroupVersion.WithResource("customresourcedefinitions"))
 
-	// 2. Natively implemented resources
-	nativeAPIs, err := config.ControlPlane.New("generic-controlplane", apiExtensionsServer.GenericAPIServer)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create generic controlplane apiserver: %w", err)
+	// TODO: we can use single variable here with cleaner logic bellow.
+	var aggregatorServer aggregatorapiserver.APIAggregator
+	var miniAggregatorServer aggregatorapiserver.APIAggregator
+
+	var apiExtensionsServer *apiextensionapiserver.CustomResourceDefinitions
+	var nativeAPIs *controlplaneapiserver.Server
+	var err error
+
+	if config.Batteries.IsEnabled(batteries.BatteryCRDs) {
+		// Base of CRDs are extension server
+		apiExtensionsServer, err = config.APIExtensions.New(genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
+		if err != nil {
+			return nil, fmt.Errorf("failed to create apiextensions-apiserver: %w", err)
+		}
+
+		nativeAPIs, err = config.ControlPlane.New("generic-controlplane", apiExtensionsServer.GenericAPIServer)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create generic controlplane apiserver: %w", err)
+		}
+	} else {
+		// 2. Natively implemented resources
+		var err error
+		nativeAPIs, err = config.ControlPlane.New("generic-controlplane", genericapiserver.NewEmptyDelegateWithCustomHandler(notFoundHandler))
+		if err != nil {
+			return nil, fmt.Errorf("failed to create generic controlplane apiserver: %w", err)
+		}
 	}
+
 	client, err := kubernetes.NewForConfig(config.ControlPlane.Generic.LoopbackClientConfig)
 	if err != nil {
 		return nil, err
@@ -254,16 +272,56 @@ func createServerChain(config options.CompletedConfig) (*aggregatorapiserver.API
 	if err != nil {
 		return nil, fmt.Errorf("failed to create storage providers: %w", err)
 	}
+
+	// Filter out the disabled batteries
+	storageProviders = config.Batteries.FilterStorageProviders(storageProviders)
+
 	if err := nativeAPIs.InstallAPIs(storageProviders...); err != nil {
 		return nil, fmt.Errorf("failed to install APIs: %w", err)
 	}
+	for _, storageProvider := range storageProviders {
+		klog.Infof("Serving %s", storageProvider.GroupName())
+	}
 
 	// 3. Aggregator for APIServices, discovery and OpenAPI
-	aggregatorServer, err := controlplaneapiserver.CreateAggregatorServer(config.Aggregator, nativeAPIs.GenericAPIServer, apiExtensionsServer.Informers.Apiextensions().V1().CustomResourceDefinitions(), crdAPIEnabled, controlplaneapiserver.DefaultGenericAPIServicePriorities())
+	// If CRDs are enabled, we wire in, else - its a no-op.
+	if config.Batteries.IsEnabled(batteries.BatteryCRDs) {
+		aggregatorServer, err = controlplaneapiserver.CreateAggregatorServer(
+			config.Aggregator,
+			nativeAPIs.GenericAPIServer,
+			apiExtensionsServer.Informers.Apiextensions().V1().CustomResourceDefinitions(),
+			false,
+			controlplaneapiserver.DefaultGenericAPIServicePriorities())
+		if err != nil {
+			return nil, fmt.Errorf("failed to create kube-aggregator: %w", err)
+		}
+		miniAggregatorServer, err = config.MiniAggregator.New(nativeAPIs.GenericAPIServer, nativeAPIs, apiExtensionsServer)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create mini-aggregator: %w", err)
+		}
+
+	} else {
+		klog.Info("CRDs are disabled, skipping api-extension server")
+		aggregatorServer, err = controlplaneapiserver.CreateAggregatorServer(config.Aggregator, nativeAPIs.GenericAPIServer, nil, false, controlplaneapiserver.DefaultGenericAPIServicePriorities())
+		if err != nil {
+			return nil, fmt.Errorf("failed to create kube-aggregator: %w", err)
+		}
+		miniAggregatorServer, err = config.MiniAggregator.New(nativeAPIs.GenericAPIServer, nativeAPIs, nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create mini-aggregator: %w", err)
+		}
+	}
 	if err != nil {
 		// we don't need special handling for innerStopCh because the aggregator server doesn't create any go routines
 		return nil, fmt.Errorf("failed to create kube-aggregator: %w", err)
 	}
 
-	return aggregatorServer, nil
+	// 4. Based on if we need APIServices or not return right server
+	if config.Batteries.IsEnabled(batteries.BatteryAPIServices) {
+		klog.Info("Using aggregator server")
+		return aggregatorServer, nil
+	} else {
+		klog.Info("Using mini-aggregator server")
+		return miniAggregatorServer, nil
+	}
 }
