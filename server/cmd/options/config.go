@@ -28,6 +28,8 @@ import (
 	"k8s.io/kubernetes/pkg/controlplane"
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
+
+	"github.com/kcp-dev/generic-controlplane/server/batteries"
 )
 
 // Config holds the configuration for the generic controlplane server.
@@ -46,6 +48,8 @@ type Config struct {
 type ExtraConfig struct {
 	// authentication
 	GcpAdminToken, UserToken string
+	// Batteries holds the batteries configuration for the generic controlplane server.
+	Batteries batteries.Batteries
 }
 
 type completedConfig struct {
@@ -68,6 +72,8 @@ type CompletedConfig struct {
 
 // Complete fills in any fields not set that are required to have valid data.
 func (c *Config) Complete() (CompletedConfig, error) {
+	c.Batteries.Complete()
+
 	return CompletedConfig{&completedConfig{
 		Options: c.Options,
 
@@ -85,6 +91,9 @@ func (c *Config) Complete() (CompletedConfig, error) {
 func NewConfig(opts CompletedOptions) (*Config, error) {
 	c := &Config{
 		Options: opts,
+		ExtraConfig: ExtraConfig{
+			Batteries: opts.Extra.Batteries,
+		},
 	}
 
 	if opts.EmbeddedEtcd.Enabled {
