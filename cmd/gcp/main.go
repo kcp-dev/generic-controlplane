@@ -19,15 +19,14 @@ package main
 import (
 	"os"
 
-	"github.com/kcp-dev/kcp/cli/pkg/help"
 	"github.com/spf13/cobra"
-
 	"k8s.io/component-base/cli"
 	_ "k8s.io/component-base/logs/json/register"
 	_ "k8s.io/component-base/metrics/prometheus/clientgo"
 	_ "k8s.io/component-base/metrics/prometheus/version"
 
 	server "github.com/kcp-dev/generic-controlplane/server/cmd"
+	"github.com/kcp-dev/generic-controlplane/server/cmd/help"
 )
 
 func main() {
