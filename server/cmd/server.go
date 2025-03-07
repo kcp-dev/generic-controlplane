@@ -164,6 +164,7 @@ APIs.`,
 
 	setPartialUsageAndHelpFunc(cmdStart, namedFlagSets, cols, []string{
 		"etcd-servers",
+		"batteries",
 	})
 
 	help.FitTerminal(cmdStart.OutOrStdout())
@@ -295,13 +296,3 @@ func createServerChain(config options.CompletedConfig) (*aggregatorapiserver.API
 
 	return aggregatorServer, nil
 }
-
-type ControlPlaneBattery string
-
-const (
-	ControlPlaneBatteryCore        ControlPlaneBattery = "core"
-	ControlPlaneBatteryFlowControl ControlPlaneBattery = "flowcontrol"
-	ControlPlaneBatteryRBAC        ControlPlaneBattery = "rbac"
-	ControlPlaneBatteryAdmission   ControlPlaneBattery = "admission"
-	ControlPlaneBatteryLease       ControlPlaneBattery = "lease"
-)

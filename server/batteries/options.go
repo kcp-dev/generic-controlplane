@@ -18,10 +18,12 @@ package batteries
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/pflag"
 
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/util/sets"
 	genericfeatures "k8s.io/apiserver/pkg/features"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 )
@@ -48,7 +50,11 @@ func (s *Options) AddFlags(fs *pflag.FlagSet) {
 		return
 	}
 
-	fs.StringSliceVar(&s.Enabled, "batteries", []string{}, "The batteries to enable in the generic control-plane server.")
+	bats := sets.NewString()
+	for b := range defaultBatteries {
+		bats = bats.Insert(string(b))
+	}
+	fs.StringSliceVar(&s.Enabled, "batteries", []string{}, "The batteries to enable in the generic control-plane server. Possible values: "+strings.Join(bats.List(), ", "))
 }
 
 // Complete defaults fields that have not set by the consumer of this package.
