@@ -48,7 +48,7 @@ type ExtraConfig struct {
 	// authentication
 	GcpAdminToken, UserToken string
 	// Batteries holds the batteries configuration for the generic controlplane server.
-	Batteries batteries.Batteries
+	Batteries batteries.CompletedOptions
 }
 
 type completedConfig struct {
@@ -71,8 +71,6 @@ type CompletedConfig struct {
 
 // Complete fills in any fields not set that are required to have valid data.
 func (c *Config) Complete() (CompletedConfig, error) {
-	c.Batteries.Complete()
-
 	return CompletedConfig{&completedConfig{
 		Options: c.Options,
 
@@ -85,13 +83,13 @@ func (c *Config) Complete() (CompletedConfig, error) {
 	}}, nil
 }
 
-// NewConfig creates all the self-contained pieces making up an
-// generic controlplane server.
+// NewConfig creates all the self-contained pieces making up a generic
+// controlplane server.
 func NewConfig(opts CompletedOptions) (*Config, error) {
 	c := &Config{
 		Options: opts,
 		ExtraConfig: ExtraConfig{
-			Batteries: opts.Extra.Batteries,
+			Batteries: opts.Batteries,
 		},
 	}
 
