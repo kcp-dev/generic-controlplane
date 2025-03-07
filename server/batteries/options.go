@@ -18,6 +18,7 @@ package batteries
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/pflag"
@@ -50,18 +51,52 @@ func (s *Options) AddFlags(fs *pflag.FlagSet) {
 		return
 	}
 
-	bats := sets.NewString()
-	for b := range defaultBatteries {
-		bats = bats.Insert(string(b))
+	all := sets.NewString()
+	enabled := sets.NewString()
+	var maxLen int
+	for name := range defaultBatteries {
+		if len(name) > maxLen {
+			maxLen = len(name)
+		}
 	}
-	fs.StringSliceVar(&s.Enabled, "batteries", []string{}, "The batteries to enable in the generic control-plane server. Possible values: "+strings.Join(bats.List(), ", "))
+	for name, bat := range defaultBatteries {
+		if bat.Groups == nil {
+			all = all.Insert(fmt.Sprintf("%-*s: %s", maxLen, name, bat.Description))
+		}
+		all = all.Insert(fmt.Sprintf("%-*s %s [%s]", maxLen+1, name+":", bat.Description, strings.Join(bat.Groups, ", ")))
+		if bat.Enabled {
+			enabled.Insert(string(name))
+		}
+	}
+	fs.StringSliceVar(&s.Enabled, "batteries", []string{}, fmt.Sprintf(
+		"The batteries to enable in the generic control-plane server ('-battery' to disable, '+battery' or 'battery' to enable).\n\nPossible values:\n- %s\n\nEnabled batteries: %s",
+		strings.Join(all.List(), "\n- "),
+		strings.Join(enabled.List(), ", "),
+	))
 }
 
 // Complete defaults fields that have not set by the consumer of this package.
 func (b Options) Complete() CompletedOptions {
 	// Ensure all related configurations are configured
 	for _, name := range b.Enabled {
-		if _, ok := b.batteries[Battery(name)]; ok {
+		if len(name) == 0 {
+			continue
+		}
+		switch name[0] {
+		case '-':
+			if _, ok := b.batteries[Battery(name[1:])]; !ok {
+				fmt.Fprintf(os.Stderr, "Warning: unknown battery %q\n", name[1:])
+			}
+			b.Disable(Battery(name[1:]))
+		case '+':
+			if _, ok := b.batteries[Battery(name[1:])]; !ok {
+				fmt.Fprintf(os.Stderr, "Warning: unknown battery %q\n", name[1:])
+			}
+			b.Enable(Battery(name[1:]))
+		default:
+			if _, ok := b.batteries[Battery(name[1:])]; !ok {
+				fmt.Fprintf(os.Stderr, "Warning: unknown battery %q\n", name)
+			}
 			b.Enable(Battery(name))
 		}
 	}
