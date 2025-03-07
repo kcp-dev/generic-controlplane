@@ -34,9 +34,12 @@ type BatterySpec struct {
 	// Enabled indicates whether the battery is enabled.
 	Enabled bool
 
-	// GroupNames is the list of group names that the battery is responsible for.
+	// Description is a human-readable description of the battery.
+	Description string
+
+	// Groups is the list of group names that the battery is responsible for.
 	// If disabled, the battery will not be registered for these groups.
-	GroupNames []string
+	Groups []string
 }
 
 const (
@@ -57,12 +60,35 @@ const (
 var (
 	// The generic features.
 	defaultBatteries = map[Battery]BatterySpec{
-		BatteryLeases:         {Enabled: false, GroupNames: []string{"coordination.k8s.io"}},
-		BatteryAuthentication: {Enabled: false, GroupNames: []string{"authentication.k8s.io", "rbac.authentication.k8s.io"}},
-		BatteryAuthorization:  {Enabled: false, GroupNames: []string{"authorization.k8s.io", "rbac.authorization.k8s.io"}},
-		BatteryAdmission:      {Enabled: false, GroupNames: []string{"admissionregistration.k8s.io"}},
-		BatteryFlowControl:    {Enabled: false, GroupNames: []string{"flowcontrol.apiserver.k8s.io"}},
-		BatteryCRDs:           {Enabled: false, GroupNames: []string{"apiextensions.k8s.io"}},
+		BatteryLeases: {
+			Enabled:     false,
+			Groups:      []string{"coordination.k8s.io"},
+			Description: "Leases are used to coordinate some operations between Kubernetes components"},
+		BatteryAuthentication: {
+			Enabled:     false,
+			Groups:      []string{"authentication.k8s.io"},
+			Description: "Authentication verifies the identity of the user",
+		},
+		BatteryAuthorization: {
+			Enabled:     false,
+			Groups:      []string{"authorization.k8s.io", "rbac.authorization.k8s.io"},
+			Description: "Authorization decides whether a request is allowed",
+		},
+		BatteryAdmission: {
+			Enabled:     false,
+			Groups:      []string{"admissionregistration.k8s.io"},
+			Description: "Admission controllers validate and mutate requests",
+		},
+		BatteryFlowControl: {
+			Enabled:     false,
+			Groups:      []string{"flowcontrol.apiserver.k8s.io"},
+			Description: "Flow control limits number of requests processed at a time",
+		},
+		BatteryCRDs: {
+			Enabled:     false,
+			Groups:      []string{"apiextensions.k8s.io"},
+			Description: "CustomResourceDefinitions (CRDs) allow definition of custom resources",
+		},
 	}
 )
 
@@ -143,7 +169,7 @@ func (b CompletedOptions) DefaultOffAdmissionPlugins() sets.Set[string] {
 
 func (b CompletedOptions) containsAndDisabled(name string) bool {
 	for _, spec := range b.batteries {
-		if slices.Contains(spec.GroupNames, name) && !spec.Enabled {
+		if slices.Contains(spec.Groups, name) && !spec.Enabled {
 			return true
 		}
 	}
