@@ -23,7 +23,6 @@ import (
 	"os"
 	"path/filepath"
 
-	etcdoptions "github.com/kcp-dev/kcp/pkg/embeddedetcd/options"
 	"k8s.io/client-go/informers"
 
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -38,6 +37,7 @@ import (
 	"k8s.io/kubernetes/pkg/serviceaccount"
 
 	"github.com/kcp-dev/generic-controlplane/server/batteries"
+	etcdoptions "github.com/kcp-dev/generic-controlplane/server/embeddedetcd/options"
 	"github.com/kcp-dev/generic-controlplane/server/tokengetter"
 )
 
