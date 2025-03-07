@@ -45,23 +45,22 @@ import (
 type Options struct {
 	GenericControlPlane controlplaneapiserveroptions.Options
 	EmbeddedEtcd        etcdoptions.Options
-
 	AdminAuthentication AdminAuthentication
+	Batteries           batteries.Options
 
 	Extra ExtraOptions
 }
 
 // ExtraOptions holds the extra configuration for the generic controlplane server.
 type ExtraOptions struct {
-	RootDir   string
-	Batteries batteries.Batteries
+	RootDir string
 }
 
 type completedOptions struct {
 	GenericControlPlane controlplaneapiserveroptions.CompletedOptions
 	EmbeddedEtcd        etcdoptions.CompletedOptions
-
 	AdminAuthentication AdminAuthentication
+	Batteries           batteries.CompletedOptions
 
 	Extra ExtraOptions
 }
@@ -77,9 +76,9 @@ func NewOptions(rootDir string) *Options {
 		GenericControlPlane: *controlplaneapiserveroptions.NewOptions(),
 		EmbeddedEtcd:        *etcdoptions.NewOptions(rootDir),
 		AdminAuthentication: *NewAdminAuthentication(rootDir),
+		Batteries:           batteries.New(),
 		Extra: ExtraOptions{
-			RootDir:   rootDir,
-			Batteries: batteries.New(),
+			RootDir: rootDir,
 		},
 	}
 
@@ -129,8 +128,7 @@ func (o *Options) AddFlags(fss *cliflag.NamedFlagSets) {
 
 	o.EmbeddedEtcd.AddFlags(fss.FlagSet("Embedded etcd"))
 	o.AdminAuthentication.AddFlags(fss.FlagSet("GCP Standalone Authentication"))
-
-	o.Extra.Batteries.AddFlags(fss.FlagSet("Batteries"))
+	o.Batteries.AddFlags(fss.FlagSet("Options"))
 }
 
 // Complete fills in any fields not set that are required to have valid data.
@@ -140,7 +138,7 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 		o.EmbeddedEtcd.Enabled = true
 	}
 
-	o.Extra.Batteries.Complete()
+	completedBatteries := o.Batteries.Complete()
 
 	var serviceAccountFile string
 	if len(o.GenericControlPlane.Authentication.ServiceAccounts.KeyFiles) == 0 {
@@ -173,8 +171,8 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 	}
 
 	// override set of admission plugins
-	o.Extra.Batteries.RegisterAllAdmissionPlugins(o.GenericControlPlane.Admission.GenericAdmission.Plugins)
-	o.GenericControlPlane.Admission.GenericAdmission.DisablePlugins = sets.List[string](o.Extra.Batteries.DefaultOffAdmissionPlugins())
+	completedBatteries.RegisterAllAdmissionPlugins(o.GenericControlPlane.Admission.GenericAdmission.Plugins)
+	o.GenericControlPlane.Admission.GenericAdmission.DisablePlugins = sets.List[string](completedBatteries.DefaultOffAdmissionPlugins())
 	o.GenericControlPlane.Admission.GenericAdmission.RecommendedPluginOrder = batteries.AllOrderedPlugins
 
 	var err error
@@ -215,6 +213,7 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 			GenericControlPlane: completedGenericServerRunOptions,
 			EmbeddedEtcd:        completedEmbeddedEtcd,
 			AdminAuthentication: o.AdminAuthentication,
+			Batteries:           completedBatteries,
 			Extra:               o.Extra,
 		},
 	}, nil
@@ -227,7 +226,7 @@ func (o *CompletedOptions) Validate() []error {
 	errs = append(errs, o.GenericControlPlane.Validate()...)
 	errs = append(errs, o.EmbeddedEtcd.Validate()...)
 	errs = append(errs, o.AdminAuthentication.Validate()...)
-	errs = append(errs, o.Extra.Batteries.Validate()...)
+	errs = append(errs, o.Batteries.Validate()...)
 
 	return errs
 }

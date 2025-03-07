@@ -26,12 +26,6 @@ import (
 	// Admission policies
 )
 
-type Batteries struct {
-	list BatteriesList
-
-	BatteriesArgs []string
-}
-
 type Battery string
 
 type BatteriesList map[Battery]BatterySpec
@@ -76,35 +70,35 @@ func (b Battery) String() string {
 	return string(b)
 }
 
-func New() Batteries {
-	b := Batteries{
-		list: make(BatteriesList, len(defaultBatteries)),
+func New() Options {
+	b := Options{
+		batteries: make(BatteriesList, len(defaultBatteries)),
 	}
 	for name, spec := range defaultBatteries {
-		b.list[name] = spec
+		b.batteries[name] = spec
 	}
 	return b
 }
 
-func (b Batteries) Enable(name Battery) {
-	_b := b.list[name]
+func (b Options) Enable(name Battery) {
+	_b := b.batteries[name]
 	_b.Enabled = true
-	b.list[name] = _b
+	b.batteries[name] = _b
 }
 
-func (b Batteries) Disable(name Battery) {
-	_b := b.list[name]
+func (b Options) Disable(name Battery) {
+	_b := b.batteries[name]
 	_b.Enabled = false
-	b.list[name] = _b
+	b.batteries[name] = _b
 }
 
-func (b Batteries) IsEnabled(name Battery) bool {
-	spec, ok := b.list[name]
+func (b CompletedOptions) IsEnabled(name Battery) bool {
+	spec, ok := b.batteries[name]
 	return ok && spec.Enabled
 }
 
 // RegisterAllAdmissionPlugins registers all admission plugins based on the batteries configuration.
-func (b Batteries) RegisterAllAdmissionPlugins(plugins *admission.Plugins) {
+func (b CompletedOptions) RegisterAllAdmissionPlugins(plugins *admission.Plugins) {
 	admit.Register(plugins) // DEPRECATED as no real meaning
 	autoprovision.Register(plugins)
 	lifecycle.Register(plugins)
@@ -123,10 +117,10 @@ func (b Batteries) RegisterAllAdmissionPlugins(plugins *admission.Plugins) {
 	deny.Register(plugins)
 }
 
-func (b Batteries) DefaultOffAdmissionPlugins() sets.Set[string] {
-	defaultOnPlugins := sets.New(
+func (b CompletedOptions) DefaultOffAdmissionPlugins() sets.Set[string] {
+	defaultOnPlugins := sets.New[string](
 		lifecycle.PluginName, // NamespaceLifecycle
-		// limitranger.PluginName,               // LimitRanger
+		// limitranger.PluginName,           // LimitRanger
 		serviceaccount.PluginName,           // ServiceAccount
 		resourcequota.PluginName,            // ResourceQuota
 		certapproval.PluginName,             // CertificateApproval
@@ -147,8 +141,8 @@ func (b Batteries) DefaultOffAdmissionPlugins() sets.Set[string] {
 	return sets.New[string](AllOrderedPlugins...).Difference(defaultOnPlugins)
 }
 
-func (b Batteries) containsAndDisabled(name string) bool {
-	for _, spec := range b.list {
+func (b CompletedOptions) containsAndDisabled(name string) bool {
+	for _, spec := range b.batteries {
 		if slices.Contains(spec.GroupNames, name) && !spec.Enabled {
 			return true
 		}
@@ -156,7 +150,7 @@ func (b Batteries) containsAndDisabled(name string) bool {
 	return false
 }
 
-func (b Batteries) FilterStorageProviders(input []controlplaneapiserver.RESTStorageProvider) []controlplaneapiserver.RESTStorageProvider {
+func (b CompletedOptions) FilterStorageProviders(input []controlplaneapiserver.RESTStorageProvider) []controlplaneapiserver.RESTStorageProvider {
 	var result []controlplaneapiserver.RESTStorageProvider
 	for _, rest := range input {
 		if b.containsAndDisabled(rest.GroupName()) {
