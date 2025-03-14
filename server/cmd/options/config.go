@@ -17,6 +17,8 @@ limitations under the License.
 package options
 
 import (
+	"github.com/kcp-dev/embeddedetcd"
+
 	apiextensionsapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/util/webhook"
@@ -28,7 +30,6 @@ import (
 	generatedopenapi "k8s.io/kubernetes/pkg/generated/openapi"
 
 	"github.com/kcp-dev/generic-controlplane/server/batteries"
-	"github.com/kcp-dev/generic-controlplane/server/embeddedetcd"
 )
 
 // Config holds the configuration for the generic controlplane server.

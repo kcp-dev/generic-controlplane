@@ -20,6 +20,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
 	"k8s.io/component-base/cli"
 	_ "k8s.io/component-base/logs/json/register"
 	_ "k8s.io/component-base/metrics/prometheus/clientgo"

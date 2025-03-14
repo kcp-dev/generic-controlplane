@@ -22,7 +22,7 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-go@v5
       with:
-        go-version: v1.22.2
+        go-version: v1.23.7
     - name: Delete non-semver tags
       run: 'git tag -d $(git tag -l | grep -v "^v")'
     - name: Set LDFLAGS
@@ -47,7 +47,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         KREW_GITHUB_TOKEN: ${{ secrets.KREW_GITHUB_TOKEN }}
-    - uses: cytopia/upload-artifact-retry-action@v0.1.7
+    - uses: actions/upload-artifact@v4
       if: ${{ always() }}
       with:
         name: binaries
