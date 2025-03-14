@@ -22,10 +22,13 @@ import (
 	"os"
 	"strings"
 
+	"github.com/kcp-dev/embeddedetcd"
 	"github.com/spf13/cobra"
+
+	apiextensionapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	_ "k8s.io/apiserver/pkg/admission" // for admission plugins
+	_ "k8s.io/apiserver/pkg/admission"
 	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
@@ -35,22 +38,19 @@ import (
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/cli/globalflag"
 	"k8s.io/component-base/logs"
-	"k8s.io/klog/v2"
-
-	apiextensionapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	logsapi "k8s.io/component-base/logs/api/v1"
-	_ "k8s.io/component-base/metrics/prometheus/workqueue" // for workqueue metrics
+	_ "k8s.io/component-base/metrics/prometheus/workqueue"
 	"k8s.io/component-base/term"
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
+	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	_ "k8s.io/kubernetes/pkg/features" // add the kubernetes feature gates
+	_ "k8s.io/kubernetes/pkg/features"
 
 	"github.com/kcp-dev/generic-controlplane/server/batteries"
 	"github.com/kcp-dev/generic-controlplane/server/cmd/help"
 	options "github.com/kcp-dev/generic-controlplane/server/cmd/options"
-	"github.com/kcp-dev/generic-controlplane/server/embeddedetcd"
 	"github.com/kcp-dev/generic-controlplane/server/readiness"
 )
 

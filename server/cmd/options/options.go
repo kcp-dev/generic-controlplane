@@ -23,11 +23,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"k8s.io/client-go/informers"
+	etcdoptions "github.com/kcp-dev/embeddedetcd/options"
 
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
+	"k8s.io/client-go/informers"
 	"k8s.io/client-go/util/keyutil"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/klog/v2"
@@ -37,7 +38,6 @@ import (
 	"k8s.io/kubernetes/pkg/serviceaccount"
 
 	"github.com/kcp-dev/generic-controlplane/server/batteries"
-	etcdoptions "github.com/kcp-dev/generic-controlplane/server/embeddedetcd/options"
 	"github.com/kcp-dev/generic-controlplane/server/tokengetter"
 )
 

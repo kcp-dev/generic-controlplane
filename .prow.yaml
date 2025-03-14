@@ -7,7 +7,7 @@ presubmits:
       preset-goproxy: "true"
     spec:
       containers:
-        - image: ghcr.io/kcp-dev/infra/build:1.22.2-1
+        - image: ghcr.io/kcp-dev/infra/build:1.23.7-1
           command:
             - make
             - verify-boilerplate
@@ -25,7 +25,7 @@ presubmits:
       preset-goproxy: "true"
     spec:
       containers:
-        - image: ghcr.io/kcp-dev/infra/build:1.22.2-1
+        - image: ghcr.io/kcp-dev/infra/build:1.23.7-1
           command:
             - make
             - lint
@@ -64,7 +64,7 @@ presubmits:
       preset-goproxy: "true"
     spec:
       containers:
-        - image: ghcr.io/kcp-dev/infra/build:1.22.2-1
+        - image: ghcr.io/kcp-dev/infra/build:1.23.7-1
           command:
             - make
             - test
