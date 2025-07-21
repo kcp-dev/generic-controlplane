@@ -201,7 +201,7 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 		}
 	}
 
-	completedGenericServerRunOptions, err := o.GenericControlPlane.Complete(nil, nil)
+	completedGenericServerRunOptions, err := o.GenericControlPlane.Complete(nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}
