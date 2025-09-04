@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@v5
+    - uses: actions/setup-go@v6
       with:
         go-version: v1.23.7
     - name: Delete non-semver tags
