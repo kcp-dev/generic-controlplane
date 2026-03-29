@@ -102,7 +102,7 @@ APIs.`,
 			}
 			cliflag.PrintFlags(fs)
 
-			completedOptions, err := s.Complete()
+			completedOptions, err := s.Complete(cmd.Context())
 			if err != nil {
 				return err
 			}
