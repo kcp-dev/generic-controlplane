@@ -16,8 +16,24 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-    - name: Verifier action
-      id: verifier
-      uses: kubernetes-sigs/kubebuilder-release-tools@v0.4.3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Check PR title format
+      env:
+        PR_TITLE: ${{ github.event.pull_request.title }}
+      run: |
+        # PR titles must start with an emoji or :text: prefix indicating change type.
+        # Valid prefixes: ✨ 🐛 📖 📝 ⚠️ 🌱 ❓
+        # or :sparkles: :bug: :book: :memo: :warning: :seedling: :question:
+        #
+        # Note: the previous implementation used gcr.io/kubebuilder/pr-verifier:v0.4.3
+        # which is no longer available on GCR. Replaced with inline shell check.
+        VALID_PREFIXES="✨|🐛|📖|📝|⚠️|🌱|❓|:sparkles:|:bug:|:book:|:memo:|:warning:|:seedling:|:question:"
+        if echo "$PR_TITLE" | grep -qP "^($VALID_PREFIXES) .+"; then
+          echo "✅ PR title format is valid: $PR_TITLE"
+        else
+          echo "❌ PR title must start with an emoji or :text: prefix."
+          echo "Valid prefixes: ✨ 🐛 📖 📝 ⚠️ 🌱 ❓"
+          echo "  or: :sparkles: :bug: :book: :memo: :warning: :seedling: :question:"
+          echo ""
+          echo "Current title: $PR_TITLE"
+          exit 1
+        fi
