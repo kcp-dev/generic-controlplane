@@ -44,7 +44,7 @@ import (
 
 type Battery string
 
-type BatteriesList map[Battery]BatterySpec
+type List map[Battery]BatterySpec
 
 type BatterySpec struct {
 	// Enabled indicates whether the battery is enabled.
@@ -114,7 +114,7 @@ func (b Battery) String() string {
 
 func New() Options {
 	b := Options{
-		batteries: make(BatteriesList, len(defaultBatteries)),
+		batteries: make(List, len(defaultBatteries)),
 	}
 	for name, spec := range defaultBatteries {
 		b.batteries[name] = spec

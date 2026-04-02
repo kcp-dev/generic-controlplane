@@ -40,7 +40,7 @@ func (c clientGetter) GetServiceAccount(namespace, name string) (*v1.ServiceAcco
 	return c.serviceAccountLister.ServiceAccounts(namespace).Get(name)
 }
 
-func (c clientGetter) GetPod(namespace, name string) (*v1.Pod, error) {
+func (c clientGetter) GetPod(_, name string) (*v1.Pod, error) {
 	return nil, apierrors.NewNotFound(v1.Resource("pods"), name)
 }
 

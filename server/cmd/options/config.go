@@ -132,7 +132,7 @@ func NewConfig(opts CompletedOptions) (*Config, error) {
 	}
 	c.APIExtensions = apiExtensions
 
-	aggregator, err := controlplaneapiserver.CreateAggregatorConfig(*kubeAPIs.Generic, opts.GenericControlPlane, kubeAPIs.VersionedInformers, serviceResolver, kubeAPIs.ProxyTransport, kubeAPIs.Extra.PeerProxy, pluginInitializer)
+	aggregator, err := controlplaneapiserver.CreateAggregatorConfig(*kubeAPIs.Generic, opts.GenericControlPlane, kubeAPIs.VersionedInformers, serviceResolver, kubeAPIs.ProxyTransport, kubeAPIs.PeerProxy, pluginInitializer)
 	if err != nil {
 		return nil, err
 	}
