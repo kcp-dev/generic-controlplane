@@ -84,8 +84,12 @@ func NewOptions(rootDir string) *Options {
 	}
 
 	// Disable node related features to prevent the need for informers.
-	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBindingValidation, false)
-	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false)
+	if err := utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBindingValidation, false); err != nil {
+		panic(err) // only fails on unknown feature gate, which is a programming error
+	}
+	if err := utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false); err != nil {
+		panic(err) // only fails on unknown feature gate, which is a programming error
+	}
 
 	factory := func(factory informers.SharedInformerFactory) serviceaccount.ServiceAccountTokenGetter {
 		return tokengetter.NewGetterFromClient(factory.Core().V1().Secrets().Lister(), factory.Core().V1().ServiceAccounts().Lister())
