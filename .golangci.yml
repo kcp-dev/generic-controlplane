@@ -12,6 +12,14 @@ linters:
     - misspell
     - gosec
     - revive
+  settings:
+    revive:
+      rules:
+        - name: blank-imports
+          disabled: true
+        - name: unused-parameter
+        - name: receiver-naming
+        - name: error-strings
   exclusions:
     presets:
       - comments

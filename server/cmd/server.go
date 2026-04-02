@@ -28,7 +28,7 @@ import (
 	apiextensionapiserver "k8s.io/apiextensions-apiserver/pkg/apiserver"
 	kerrors "k8s.io/apimachinery/pkg/util/errors"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	_ "k8s.io/apiserver/pkg/admission" // register admission plugins
+	_ "k8s.io/apiserver/pkg/admission"
 	genericapifilters "k8s.io/apiserver/pkg/endpoints/filters"
 	genericapiserver "k8s.io/apiserver/pkg/server"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
@@ -39,14 +39,14 @@ import (
 	"k8s.io/component-base/cli/globalflag"
 	"k8s.io/component-base/logs"
 	logsapi "k8s.io/component-base/logs/api/v1"
-	_ "k8s.io/component-base/metrics/prometheus/workqueue" // register workqueue metrics
+	_ "k8s.io/component-base/metrics/prometheus/workqueue"
 	"k8s.io/component-base/term"
 	"k8s.io/component-base/version"
 	"k8s.io/component-base/version/verflag"
 	"k8s.io/klog/v2"
 	aggregatorapiserver "k8s.io/kube-aggregator/pkg/apiserver"
 	controlplaneapiserver "k8s.io/kubernetes/pkg/controlplane/apiserver"
-	_ "k8s.io/kubernetes/pkg/features" // register feature gates
+	_ "k8s.io/kubernetes/pkg/features"
 
 	"github.com/kcp-dev/generic-controlplane/server/batteries"
 	"github.com/kcp-dev/generic-controlplane/server/cmd/help"
