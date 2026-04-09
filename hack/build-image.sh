@@ -37,7 +37,7 @@ location = "$mirror"
 EOF
 fi
 
-repository=ghcr.io/kcp-dev/kcp
+repository=ghcr.io/kcp-dev/generic-controlplane
 architectures="amd64 arm64 ppc64le"
 
 # when building locally, just tag with the current HEAD hash
