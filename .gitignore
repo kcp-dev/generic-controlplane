@@ -4,3 +4,4 @@
 vendor
 hack/tools/*
 bin/gcp
+coverage.txt
