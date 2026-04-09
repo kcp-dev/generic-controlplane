@@ -157,7 +157,7 @@ endif
 
 test: WHAT ?= ./...
 # We will need to move into the sub package, of sdk to run those tests.
-test: ## Run tests
+test: $(GOTESTSUM) ## Run tests
 	$(GO_TEST) -race $(COUNT_ARG) -coverprofile=coverage.txt -covermode=atomic $(TEST_ARGS) $$(go list "$(WHAT)")
 
 .PHONY: verify-imports
