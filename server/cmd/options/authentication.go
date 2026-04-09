@@ -106,7 +106,7 @@ func (s *AdminAuthentication) ApplyTo(config *genericapiserver.Config) (volatile
 		Groups: []string{},
 	}
 
-	newAuthenticator := group.NewAuthenticatedGroupAdder(bearertoken.New(authenticator.WrapAudienceAgnosticToken(config.Authentication.APIAudiences, authenticator.TokenFunc(func(ctx context.Context, requestToken string) (*authenticator.Response, bool, error) {
+	newAuthenticator := group.NewAuthenticatedGroupAdder(bearertoken.New(authenticator.WrapAudienceAgnosticToken(config.Authentication.APIAudiences, authenticator.TokenFunc(func(_ context.Context, requestToken string) (*authenticator.Response, bool, error) {
 		if requestToken == volatileGcpAdminToken {
 			return &authenticator.Response{User: gcpAdminUser}, true, nil
 		}

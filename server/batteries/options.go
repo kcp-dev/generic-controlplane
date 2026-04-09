@@ -31,12 +31,12 @@ import (
 
 // Options holds the configuration for the batteries.
 type Options struct {
-	batteries BatteriesList
+	batteries List
 	Enabled   []string
 }
 
 type completedOptions struct {
-	batteries BatteriesList
+	batteries List
 	Enabled   []string
 }
 
@@ -76,35 +76,35 @@ func (s *Options) AddFlags(fs *pflag.FlagSet) {
 }
 
 // Complete defaults fields that have not set by the consumer of this package.
-func (b Options) Complete() CompletedOptions {
+func (s Options) Complete() CompletedOptions {
 	// Ensure all related configurations are configured
-	for _, name := range b.Enabled {
+	for _, name := range s.Enabled {
 		if len(name) == 0 {
 			continue
 		}
 		switch name[0] {
 		case '-':
-			if _, ok := b.batteries[Battery(name[1:])]; !ok {
+			if _, ok := s.batteries[Battery(name[1:])]; !ok {
 				fmt.Fprintf(os.Stderr, "Warning: unknown battery %q\n", name[1:])
 			}
-			b.Disable(Battery(name[1:]))
+			s.Disable(Battery(name[1:]))
 		case '+':
-			if _, ok := b.batteries[Battery(name[1:])]; !ok {
+			if _, ok := s.batteries[Battery(name[1:])]; !ok {
 				fmt.Fprintf(os.Stderr, "Warning: unknown battery %q\n", name[1:])
 			}
-			b.Enable(Battery(name[1:]))
+			s.Enable(Battery(name[1:]))
 		default:
-			if _, ok := b.batteries[Battery(name[1:])]; !ok {
+			if _, ok := s.batteries[Battery(name[1:])]; !ok {
 				fmt.Fprintf(os.Stderr, "Warning: unknown battery %q\n", name)
 			}
-			b.Enable(Battery(name))
+			s.Enable(Battery(name))
 		}
 	}
 
 	ret := CompletedOptions{
 		&completedOptions{
-			batteries: b.batteries,
-			Enabled:   b.Enabled,
+			batteries: s.batteries,
+			Enabled:   s.Enabled,
 		},
 	}
 

@@ -91,7 +91,7 @@ APIs.`,
 			rest.SetDefaultWarningHandler(rest.NoWarnings{})
 			return nil
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			verflag.PrintAndExitIfRequested()
 			fs := cmd.Flags()
 
@@ -102,7 +102,7 @@ APIs.`,
 			}
 			cliflag.PrintFlags(fs)
 
-			completedOptions, err := s.Complete()
+			completedOptions, err := s.Complete(cmd.Context())
 			if err != nil {
 				return err
 			}
@@ -154,7 +154,7 @@ APIs.`,
 			rest.SetDefaultWarningHandler(rest.NoWarnings{})
 			return nil
 		},
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			fmt.Fprintf(cmd.OutOrStderr(), usageFmt, cmdStart.UseLine())
 			cliflag.PrintSections(cmd.OutOrStderr(), namedFlagSets, cols)
 			return nil
@@ -207,7 +207,7 @@ func Run(ctx context.Context, opts options.CompletedOptions) error {
 	}
 
 	// write the kubeconfig file as close to the start of the server as possible
-	err = completed.Options.AdminAuthentication.WriteKubeConfig(completed.ControlPlane.Generic, completed.ExtraConfig.GcpAdminToken, completed.ExtraConfig.UserToken)
+	err = completed.Options.AdminAuthentication.WriteKubeConfig(completed.ControlPlane.Generic, completed.GcpAdminToken, completed.UserToken)
 	if err != nil {
 		return err
 	}

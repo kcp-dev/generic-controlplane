@@ -17,6 +17,7 @@ limitations under the License.
 package options
 
 import (
+	"context"
 	cryptorand "crypto/rand"
 	"crypto/rsa"
 	"fmt"
@@ -83,8 +84,12 @@ func NewOptions(rootDir string) *Options {
 	}
 
 	// Disable node related features to prevent the need for informers.
-	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBindingValidation, false)
-	utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false)
+	if err := utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBindingValidation, false); err != nil {
+		panic(err) // only fails on unknown feature gate, which is a programming error
+	}
+	if err := utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false); err != nil {
+		panic(err) // only fails on unknown feature gate, which is a programming error
+	}
 
 	factory := func(factory informers.SharedInformerFactory) serviceaccount.ServiceAccountTokenGetter {
 		return tokengetter.NewGetterFromClient(factory.Core().V1().Secrets().Lister(), factory.Core().V1().ServiceAccounts().Lister())
@@ -132,7 +137,7 @@ func (o *Options) AddFlags(fss *cliflag.NamedFlagSets) {
 }
 
 // Complete fills in any fields not set that are required to have valid data.
-func (o *Options) Complete() (*CompletedOptions, error) {
+func (o *Options) Complete(ctx context.Context) (*CompletedOptions, error) {
 	if servers := o.GenericControlPlane.Etcd.StorageConfig.Transport.ServerList; len(servers) == 1 && servers[0] == "embedded" {
 		klog.Background().Info("enabling embedded etcd server")
 		o.EmbeddedEtcd.Enabled = true
@@ -201,7 +206,7 @@ func (o *Options) Complete() (*CompletedOptions, error) {
 		}
 	}
 
-	completedGenericServerRunOptions, err := o.GenericControlPlane.Complete(nil, nil)
+	completedGenericServerRunOptions, err := o.GenericControlPlane.Complete(ctx, nil, nil)
 	if err != nil {
 		return nil, err
 	}
