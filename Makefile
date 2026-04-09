@@ -44,7 +44,7 @@ OPENSHIFT_GOIMPORTS_BIN := openshift-goimports
 OPENSHIFT_GOIMPORTS := $(TOOLS_DIR)/$(OPENSHIFT_GOIMPORTS_BIN)-$(OPENSHIFT_GOIMPORTS_VER)
 export OPENSHIFT_GOIMPORTS # so hack scripts can use it
 
-GOLANGCI_LINT_VER := v2.10.1
+GOLANGCI_LINT_VER := 2.10.1
 GOLANGCI_LINT_BIN := golangci-lint
 GOLANGCI_LINT := $(TOOLS_GOBIN_DIR)/$(GOLANGCI_LINT_BIN)-$(GOLANGCI_LINT_VER)
 
@@ -112,7 +112,10 @@ install: require-jq require-go require-git verify-go-versions ## Install the pro
 .PHONY: install
 
 $(GOLANGCI_LINT):
-	GOBIN=$(TOOLS_GOBIN_DIR) $(GO_INSTALL) github.com/golangci/golangci-lint/v2/cmd/golangci-lint $(GOLANGCI_LINT_BIN) $(GOLANGCI_LINT_VER)
+	@UGET_DIRECTORY=$(TOOLS_GOBIN_DIR) UGET_VERSIONED_BINARIES=true hack/uget.sh \
+		https://github.com/golangci/golangci-lint/releases/download/v{VERSION}/golangci-lint-{VERSION}-{GOOS}-{GOARCH}.tar.gz \
+		$(GOLANGCI_LINT_BIN) \
+		$(GOLANGCI_LINT_VER)
 
 $(STATICCHECK):
 	GOBIN=$(TOOLS_GOBIN_DIR) $(GO_INSTALL) honnef.co/go/tools/cmd/staticcheck $(STATICCHECK_BIN) $(STATICCHECK_VER)
