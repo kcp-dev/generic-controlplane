@@ -143,7 +143,7 @@ imports: $(OPENSHIFT_GOIMPORTS) verify-go-versions
 
 $(TOOLS_DIR)/verify_boilerplate.py:
 	mkdir -p $(TOOLS_DIR)
-	curl --fail --retry 3 -L -o $(TOOLS_DIR)/verify_boilerplate.py https://raw.githubusercontent.com/kubernetes/repo-infra/master/hack/verify_boilerplate.py
+	curl --fail --retry 3 -L -o $(TOOLS_DIR)/verify_boilerplate.py https://raw.githubusercontent.com/kubernetes/repo-infra/8d4d7895e2a39033f03693c711def8d261f4abaf/hack/verify_boilerplate.py
 	chmod +x $(TOOLS_DIR)/verify_boilerplate.py
 
 .PHONY: verify-boilerplate
