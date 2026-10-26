@@ -28,13 +28,11 @@ import (
 
 	"k8s.io/apimachinery/pkg/util/sets"
 	"k8s.io/apiserver/pkg/admission"
-	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/util/keyutil"
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/klog/v2"
 	controlplaneapiserveroptions "k8s.io/kubernetes/pkg/controlplane/apiserver/options"
-	"k8s.io/kubernetes/pkg/features"
 	kubeoptions "k8s.io/kubernetes/pkg/kubeapiserver/options"
 	"k8s.io/kubernetes/pkg/serviceaccount"
 
@@ -81,14 +79,6 @@ func NewOptions(rootDir string) *Options {
 		Extra: ExtraOptions{
 			RootDir: rootDir,
 		},
-	}
-
-	// Disable node related features to prevent the need for informers.
-	if err := utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBindingValidation, false); err != nil {
-		panic(err) // only fails on unknown feature gate, which is a programming error
-	}
-	if err := utilfeature.DefaultMutableFeatureGate.OverrideDefault(features.ServiceAccountTokenNodeBinding, false); err != nil {
-		panic(err) // only fails on unknown feature gate, which is a programming error
 	}
 
 	factory := func(factory informers.SharedInformerFactory) serviceaccount.ServiceAccountTokenGetter {
